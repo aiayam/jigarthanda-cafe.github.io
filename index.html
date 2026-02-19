@@ -1,11 +1,1357 @@
+html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Test Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jigarthanda Cafe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Poppins',sans-serif;background:#fafbfe;color:#333;line-height:1.6;overflow-x:hidden}
+        html{scroll-behavior:smooth}
+
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-10px) rotate(2deg)}75%{transform:translateY(-12px) rotate(-2deg)}}
+        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        @keyframes wobble{0%{transform:rotate(0)}15%{transform:rotate(5deg)}30%{transform:rotate(-5deg)}45%{transform:rotate(3deg)}60%{transform:rotate(-3deg)}75%{transform:rotate(1deg)}100%{transform:rotate(0)}}
+        @keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        @keyframes popIn{0%{transform:scale(0.7);opacity:0}100%{transform:scale(1);opacity:1}}
+        @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+        @keyframes confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+        @keyframes morphBg{0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%}50%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%}}
+        @keyframes particleFloat{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh) translateX(100px);opacity:0}}
+        @keyframes statusPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}
+        @keyframes loadBar{0%{width:0;margin-left:0}50%{width:70%;margin-left:15%}100%{width:0;margin-left:100%}}
+        @keyframes mobileMenuSlide{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes starPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+        @keyframes liveGlow{0%,100%{box-shadow:0 0 5px rgba(0,184,148,0.5)}50%{box-shadow:0 0 20px rgba(0,184,148,0.8)}}
+
+        .loading-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#fff5f0,#fff0e6,#ffe8d6);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.8s,visibility 0.8s}
+        .loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .loading-logo{width:80px;height:80px;border-radius:20px;object-fit:cover;animation:float 2s ease-in-out infinite;box-shadow:0 10px 40px rgba(255,107,53,0.3)}
+        .loading-logo-emoji{font-size:70px;animation:float 2s ease-in-out infinite}
+        .loading-screen p{color:#d35400;margin-top:20px;font-size:20px;font-weight:700;letter-spacing:2px}
+        .loading-screen .loading-detail{color:#999;font-size:13px;margin-top:8px;font-weight:400}
+        .loading-bar{width:200px;height:4px;background:#f0e0d0;border-radius:10px;margin-top:20px;overflow:hidden}
+        .loading-bar-inner{width:0;height:100%;background:linear-gradient(90deg,#ff6b35,#f7931e,#ff6b35);border-radius:10px;animation:loadBar 2s ease-in-out infinite}
+
+        header{background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:10px 0;position:fixed;width:100%;top:0;z-index:1000;box-shadow:0 2px 40px rgba(0,0,0,0.06);border-bottom:1px solid rgba(0,0,0,0.04);transition:all 0.4s}
+        header.scrolled{padding:6px 0;box-shadow:0 4px 30px rgba(0,0,0,0.1)}
+        nav{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:0 16px}
+        .logo{font-size:18px;font-weight:800;color:#2d3436;text-decoration:none;display:flex;align-items:center;gap:8px;flex-shrink:0}
+        .logo span{background:linear-gradient(135deg,#ff6b35,#f7931e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#ff6b35,#f7931e);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 15px rgba(255,107,53,0.3);flex-shrink:0;overflow:hidden}
+        .logo-icon img{width:100%;height:100%;object-fit:cover}
+        .nav-links{display:flex;list-style:none;gap:4px}
+        .nav-links a{color:#636e72;text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border-radius:10px;transition:all 0.3s}
+        .nav-links a:hover,.nav-links a.active{color:#ff6b35;background:rgba(255,107,53,0.08)}
+        .nav-right{display:flex;align-items:center;gap:8px}
+        .cart-btn{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;padding:8px 16px;border-radius:12px;cursor:pointer;border:none;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:6px;box-shadow:0 4px 15px rgba(255,107,53,0.3);white-space:nowrap;transition:all 0.3s}
+        .cart-btn:hover{transform:translateY(-2px)}
+        .cart-count{background:white;color:#ff6b35;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+        .cart-count.bump{animation:wobble 0.5s ease}
+        .my-orders-btn{color:#636e72;font-size:13px;padding:8px 14px;border-radius:10px;border:2px solid #e9ecef;cursor:pointer;background:white;font-family:'Poppins',sans-serif;font-weight:600;white-space:nowrap;transition:all 0.3s}
+        .my-orders-btn:hover{color:#ff6b35;border-color:#ff6b35}
+        .admin-link{color:#b2bec3;text-decoration:none;font-size:11px;padding:6px 12px;border-radius:8px;border:1px solid #e9ecef;background:white;white-space:nowrap;transition:all 0.3s}
+        .admin-link:hover{color:#ff6b35;border-color:#ff6b35}
+        .mobile-menu-btn{display:none;background:none;border:none;color:#2d3436;font-size:24px;cursor:pointer;width:40px;height:40px;align-items:center;justify-content:center;border-radius:8px}
+
+        .mobile-menu{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;pointer-events:none}
+        .mobile-menu.open{display:block;pointer-events:auto}
+        .mobile-menu-backdrop{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);opacity:0;transition:opacity 0.3s}
+        .mobile-menu.open .mobile-menu-backdrop{opacity:1}
+        .mobile-menu-panel{position:absolute;top:52px;left:8px;right:8px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.15);padding:8px;animation:mobileMenuSlide 0.3s ease;max-height:calc(100vh - 70px);overflow-y:auto}
+        .mobile-menu-nav{list-style:none}
+        .mobile-menu-nav li{margin:2px 0}
+        .mobile-menu-nav a,.mobile-menu-nav button{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:14px;text-decoration:none;color:#2d3436;font-size:15px;font-weight:600;width:100%;border:none;background:none;cursor:pointer;font-family:'Poppins',sans-serif;text-align:left;transition:all 0.2s}
+        .mobile-menu-nav a:hover,.mobile-menu-nav button:hover{background:rgba(255,107,53,0.06);color:#ff6b35}
+        .menu-icon{font-size:20px;width:28px;text-align:center}
+        .mobile-menu-divider{height:1px;background:#f0f2f5;margin:8px 14px}
+        .mobile-menu-cart-btn{background:linear-gradient(135deg,#ff6b35,#f7931e)!important;color:white!important;font-weight:700!important;justify-content:center!important;margin:8px 4px 4px;box-shadow:0 4px 15px rgba(255,107,53,0.25);border-radius:14px!important}
+        .mobile-menu-cart-count{background:white;color:#ff6b35;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;margin-left:auto}
+        .mobile-cart-floating{display:none;position:fixed;bottom:16px;left:12px;right:12px;z-index:900;background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:14px 20px;border-radius:16px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;box-shadow:0 8px 30px rgba(255,107,53,0.4);align-items:center;justify-content:space-between}
+        .mobile-cart-floating .mcf-left{display:flex;align-items:center;gap:8px}
+        .mobile-cart-floating .mcf-count{background:white;color:#ff6b35;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+
+        .hero{margin-top:52px;background:linear-gradient(135deg,#fff5f0 0%,#ffe8d6 30%,#ffd4b8 60%,#ffcba4 100%);padding:80px 20px 100px;text-align:center;color:#2d3436;position:relative;overflow:hidden}
+        .hero::before{content:'';position:absolute;top:-50%;right:-20%;width:600px;height:600px;background:linear-gradient(135deg,rgba(255,107,53,0.1),rgba(247,147,30,0.08));border-radius:50%;animation:morphBg 8s ease-in-out infinite}
+        .hero::after{content:'';position:absolute;bottom:-30%;left:-15%;width:500px;height:500px;background:linear-gradient(135deg,rgba(247,147,30,0.08),rgba(255,107,53,0.06));border-radius:50%;animation:morphBg 10s ease-in-out infinite reverse}
+        .hero-particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+        .particle{position:absolute;font-size:20px;opacity:0;animation:particleFloat 8s linear infinite}
+        .hero-content{position:relative;z-index:1}
+        .hero-badge{display:inline-flex;align-items:center;gap:8px;background:white;padding:8px 20px;border-radius:50px;font-size:12px;font-weight:600;color:#ff6b35;margin-bottom:24px;box-shadow:0 4px 20px rgba(255,107,53,0.15);animation:fadeInDown 0.8s ease 0.2s both}
+        .hero-badge-dot{width:8px;height:8px;background:#27ae60;border-radius:50%;animation:pulse 2s infinite}
+        .hero-logo{width:500px;height:500px;border-radius:24px;object-fit:cover;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.1));box-shadow:0 10px 40px rgba(255,107,53,0.2)}
+        .hero-emoji{font-size:70px;display:block;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.1))}
+        .hero h1{font-size:42px;font-weight:900;margin:20px 0 16px;letter-spacing:-2px;animation:fadeInUp 0.8s ease 0.4s both}
+        .hero h1 .highlight{background:linear-gradient(135deg,#ff6b35,#f7931e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hero p{font-size:16px;margin-bottom:32px;color:#636e72;max-width:550px;margin-left:auto;margin-right:auto;animation:fadeInUp 0.8s ease 0.6s both}
+        .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeInUp 0.8s ease 0.8s both}
+        .hero-btn{padding:14px 32px;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.4s}
+        .hero-btn-primary{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;box-shadow:0 8px 30px rgba(255,107,53,0.3)}
+        .hero-btn-primary:hover{transform:translateY(-4px)}
+        .hero-btn-secondary{background:white;color:#ff6b35;border:2px solid rgba(255,107,53,0.2)}
+        .hero-btn-secondary:hover{transform:translateY(-4px);border-color:#ff6b35}
+        .hero-stats{display:flex;justify-content:center;gap:40px;margin-top:45px;animation:fadeInUp 0.8s ease 1s both}
+        .hero-stat h3{font-size:24px;font-weight:800;color:#ff6b35}.hero-stat p{font-size:11px;color:#999;font-weight:500;margin-top:2px}
+
+        /* REVIEWS SECTION */
+        .reviews-section{max-width:1280px;margin:0 auto 60px;padding:0 16px}
+        .reviews-header{text-align:center;margin-bottom:30px}
+        .reviews-header .section-tag{display:inline-block;background:linear-gradient(135deg,rgba(255,107,53,0.1),rgba(247,147,30,0.1));color:#ff6b35;padding:6px 18px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+        .reviews-header h2{font-size:28px;font-weight:900;color:#2d3436}
+        .reviews-header p{color:#b2bec3;font-size:14px;margin-top:8px}
+        .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+        .review-card{background:white;border-radius:20px;padding:24px;border:1px solid rgba(0,0,0,0.04);box-shadow:0 4px 20px rgba(0,0,0,0.03);transition:all 0.3s}
+        .review-card:hover{transform:translateY(-4px);box-shadow:0 10px 40px rgba(255,107,53,0.1)}
+        .review-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+        .review-avatar{width:48px;height:48px;background:linear-gradient(135deg,#ff6b35,#f7931e);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;font-weight:800}
+        .review-author{flex:1}
+        .review-author h4{font-size:14px;font-weight:700;color:#2d3436}
+        .review-author p{font-size:11px;color:#b2bec3}
+        .review-stars{display:flex;gap:2px}
+        .review-stars span{font-size:16px;color:#f39c12}
+        .review-stars span.empty{color:#e9ecef}
+        .review-text{font-size:13px;color:#636e72;line-height:1.6}
+        .no-reviews{text-align:center;padding:40px;color:#b2bec3}
+
+        .category-section{text-align:center;padding:60px 16px 20px}
+        .section-tag{display:inline-block;background:linear-gradient(135deg,rgba(255,107,53,0.1),rgba(247,147,30,0.1));color:#ff6b35;padding:6px 18px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+        .section-title{font-size:34px;font-weight:900;color:#2d3436;letter-spacing:-1px}
+        .section-subtitle{color:#b2bec3;margin-bottom:28px;font-size:14px}
+        .filter-bar{background:white;border-radius:16px;padding:6px;display:inline-flex;gap:4px;flex-wrap:wrap;justify-content:center;box-shadow:0 4px 30px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04);max-width:100%}
+        .filter-btn{padding:10px 20px;border:none;background:transparent;color:#636e72;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;white-space:nowrap;transition:all 0.3s}
+        .filter-btn:hover{color:#ff6b35;background:rgba(255,107,53,0.06)}
+        .filter-btn.active{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white}
+
+        .search-sort-bar{max-width:1280px;margin:16px auto 0;padding:0 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+        .search-box{position:relative;flex:1;min-width:200px;max-width:400px}
+        .search-box input{width:100%;padding:12px 16px 12px 44px;border:2px solid #e9ecef;border-radius:12px;font-size:14px;font-family:'Poppins',sans-serif;background:white;transition:all 0.3s}
+        .search-box input:focus{outline:none;border-color:#ff6b35}
+        .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;color:#b2bec3;pointer-events:none}
+        .sort-select{padding:12px 36px 12px 14px;border:2px solid #e9ecef;border-radius:12px;font-size:13px;font-family:'Poppins',sans-serif;background:white;color:#636e72;cursor:pointer;font-weight:600;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23636e72' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+        .sort-select:focus{outline:none;border-color:#ff6b35}
+        .results-count{font-size:13px;color:#b2bec3;padding:8px 20px;max-width:1280px;margin:0 auto}
+
+        .menu-section{max-width:1280px;margin:10px auto 60px;padding:0 16px}
+        .drinks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:10px 0}
+        .drink-card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,0.04);transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);position:relative;border:1px solid rgba(0,0,0,0.04);animation:fadeInUp 0.6s ease both}
+        .drink-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(255,107,53,0.12)}
+        .drink-card .badge{position:absolute;top:12px;left:12px;color:white;padding:4px 12px;border-radius:8px;font-size:10px;font-weight:700;text-transform:uppercase;z-index:2}
+        .badge-bestseller{background:linear-gradient(135deg,#f39c12,#e67e22)}.badge-new{background:linear-gradient(135deg,#00b894,#00cec9)}.badge-popular{background:linear-gradient(135deg,#e17055,#d63031)}.badge-premium{background:linear-gradient(135deg,#a29bfe,#6c5ce7)}.badge-default{background:linear-gradient(135deg,#74b9ff,#0984e3)}
+        .drink-img{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:75px;background:linear-gradient(135deg,#fff5f0,#ffe8d6);position:relative;overflow:hidden}
+        .drink-img img{width:100%;height:100%;object-fit:cover}
+        .drink-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to top,white,transparent)}
+        .drink-info{padding:18px}
+        .drink-info .category-tag{font-size:10px;color:#ff6b35;font-weight:700;text-transform:uppercase;letter-spacing:1.5px}
+        .drink-info h3{font-size:17px;margin:6px 0;color:#2d3436;font-weight:700}
+        .drink-card:hover .drink-info h3{color:#ff6b35}
+        .drink-info .description{font-size:12px;color:#b2bec3;margin-bottom:16px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .drink-bottom{display:flex;justify-content:space-between;align-items:center}
+        .price{font-size:20px;font-weight:800;color:#2d3436}.price .currency{font-size:12px;color:#ff6b35;font-weight:700}
+        .add-btn{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;box-shadow:0 4px 15px rgba(255,107,53,0.25);transition:all 0.3s}
+        .add-btn:hover{transform:scale(1.05)}.add-btn:active{transform:scale(0.95)}
+        .add-btn.added{background:linear-gradient(135deg,#00b894,#00cec9)}
+        .no-drinks{grid-column:1/-1;text-align:center;padding:60px 20px;color:#b2bec3}
+        .skeleton-card{background:white;border-radius:20px;overflow:hidden}
+        .skeleton-img{width:100%;height:180px;background:linear-gradient(90deg,#f5f6fa 25%,#eceff4 50%,#f5f6fa 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+        .skeleton-info{padding:18px}
+        .skeleton-line{height:12px;border-radius:8px;margin-bottom:10px;background:linear-gradient(90deg,#f5f6fa 25%,#eceff4 50%,#f5f6fa 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+        .skeleton-line.short{width:35%}.skeleton-line.medium{width:65%}.skeleton-line.long{width:90%}
+
+        .cart-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);z-index:2000;justify-content:flex-end}
+        .cart-overlay.open{display:flex}
+        .cart-panel{background:white;width:420px;max-width:100%;height:100%;padding:24px 16px;overflow-y:auto;animation:slideIn 0.4s ease;box-shadow:-10px 0 50px rgba(0,0,0,0.1)}
+        .cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #f5f6fa}
+        .cart-header h2{font-size:20px;color:#2d3436;font-weight:800}
+        .close-cart{background:#f5f6fa;border:none;font-size:16px;cursor:pointer;color:#636e72;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.3s}
+        .close-cart:hover{background:#ff6b35;color:white}
+        .cart-item{display:flex;align-items:center;gap:12px;padding:14px;background:#fafbfe;border-radius:14px;margin-bottom:8px;border:1px solid #f0f2f5;animation:slideInRight 0.3s ease both}
+        .cart-item-img{width:46px;height:46px;background:linear-gradient(135deg,#fff5f0,#ffe8d6);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px;overflow:hidden}
+        .cart-item-img img{width:100%;height:100%;object-fit:cover}
+        .cart-item-details{flex:1;min-width:0}
+        .cart-item-details h4{font-size:13px;color:#2d3436;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .cart-item-details .item-price{color:#ff6b35;font-weight:800;font-size:15px;margin-top:2px}
+        .quantity-controls{display:flex;align-items:center;gap:8px;margin-top:6px}
+        .qty-btn{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;width:26px;height:26px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:700;font-family:'Poppins',sans-serif}
+        .qty-number{font-weight:800;min-width:18px;text-align:center;font-size:14px}
+        .remove-btn{background:none;color:#dfe6e9;border:none;cursor:pointer;font-size:16px;margin-left:auto;font-weight:700;flex-shrink:0}
+        .remove-btn:hover{color:#e17055}
+        .cart-total{margin-top:16px;padding:16px;background:linear-gradient(135deg,#fff5f0,#ffe8d6);border-radius:14px;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+        .total-amount{font-size:22px;color:#ff6b35;font-weight:900}
+        .checkout-form{margin-top:12px}
+        .checkout-form input{width:100%;padding:12px 16px;border:2px solid #f0f2f5;border-radius:12px;font-size:14px;font-family:'Poppins',sans-serif;margin-bottom:8px}
+        .checkout-form input:focus{outline:none;border-color:#ff6b35}
+        .checkout-btn{width:100%;margin-top:4px;background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;box-shadow:0 6px 20px rgba(255,107,53,0.3)}
+        .checkout-btn:hover{transform:translateY(-2px)}.checkout-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+        .empty-cart{text-align:center;padding:50px 20px;color:#dfe6e9}
+
+        .payment-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);z-index:3500;align-items:center;justify-content:center;padding:12px}
+        .payment-overlay.open{display:flex}
+        .payment-modal{background:white;border-radius:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;animation:popIn 0.5s ease}
+        .payment-header{background:linear-gradient(135deg,#ff6b35,#f7931e);padding:24px 20px;border-radius:24px 24px 0 0;color:white;text-align:center}
+        .payment-header h2{font-size:22px;font-weight:800}.payment-header p{font-size:13px;opacity:0.85;margin-top:4px}
+        .payment-order-summary{padding:20px}
+        .payment-order-summary h3,.payment-methods h3{font-size:11px;color:#b2bec3;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+        .payment-item{display:flex;justify-content:space-between;padding:5px 0;font-size:13px}
+        .payment-item .p-name{color:#636e72;flex:1}.payment-item .p-price{color:#2d3436;font-weight:700;flex-shrink:0;margin-left:8px}
+        .payment-total-box{display:flex;justify-content:space-between;padding:14px 0;margin-top:10px;border-top:3px solid #2d3436;font-size:22px;font-weight:900;color:#2d3436}
+        .payment-methods{padding:16px 20px;border-top:1px solid #f0f2f5}
+        .payment-option{display:flex;align-items:center;gap:14px;padding:14px;border:2px solid #f0f2f5;border-radius:14px;cursor:pointer;margin-bottom:10px;transition:all 0.3s}
+        .payment-option.selected{border-color:#ff6b35;background:#fff5f0}
+        .payment-radio{width:22px;height:22px;border-radius:50%;border:2px solid #dfe6e9;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s}
+        .payment-option.selected .payment-radio{border-color:#ff6b35;background:#ff6b35}
+        .payment-option.selected .payment-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:white}
+        .payment-option-info{flex:1}.payment-option-title{font-size:14px;font-weight:700;color:#2d3436}.payment-option-desc{font-size:11px;color:#b2bec3}
+        .payment-actions{padding:16px 20px 20px;display:flex;gap:10px}
+        .pay-btn{flex:1;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s}
+        .pay-confirm-btn{background:linear-gradient(135deg,#00b894,#00cec9);color:white}
+        .pay-confirm-btn:hover{transform:translateY(-2px)}.pay-confirm-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+        .pay-cancel-btn{background:#f5f6fa;color:#636e72;flex:0.4}
+
+        /* REVIEW MODAL */
+        .review-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);z-index:5000;align-items:center;justify-content:center;padding:12px}
+        .review-overlay.open{display:flex}
+        .review-modal{background:white;border-radius:24px;max-width:450px;width:100%;animation:popIn 0.4s ease;overflow:hidden}
+        .review-modal-header{background:linear-gradient(135deg,#ff6b35,#f7931e);padding:24px;text-align:center;color:white}
+        .review-modal-header h2{font-size:20px;font-weight:800}
+        .review-modal-header p{font-size:12px;opacity:0.85;margin-top:4px}
+        .review-modal-body{padding:24px}
+        .star-rating{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+        .star-rating span{font-size:36px;cursor:pointer;color:#e9ecef;transition:all 0.2s}
+        .star-rating span:hover,.star-rating span.active{color:#f39c12;transform:scale(1.1)}
+        .star-rating span.active{animation:starPop 0.3s ease}
+        .review-textarea{width:100%;padding:14px;border:2px solid #f0f2f5;border-radius:14px;font-size:14px;font-family:'Poppins',sans-serif;min-height:100px;resize:none;transition:all 0.3s}
+        .review-textarea:focus{outline:none;border-color:#ff6b35}
+        .review-textarea::placeholder{color:#b2bec3}
+        .review-modal-actions{display:flex;gap:10px;margin-top:16px}
+        .review-submit-btn{flex:1;background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+        .review-submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+        .review-skip-btn{background:#f5f6fa;color:#636e72;border:none;padding:14px 20px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+
+        .myorders-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);z-index:4500;align-items:flex-end;justify-content:center;padding:0}
+        .myorders-overlay.open{display:flex}
+        .myorders-modal{background:white;border-radius:24px 24px 0 0;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;animation:fadeInUp 0.4s ease}
+        .myorders-header{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:2px solid #f5f6fa;position:sticky;top:0;background:white;z-index:2;border-radius:24px 24px 0 0}
+        .myorders-header h2{font-size:18px;color:#2d3436;font-weight:800;display:flex;align-items:center;gap:8px}
+        .live-indicator{display:flex;align-items:center;gap:6px;background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;animation:liveGlow 2s infinite}
+        .live-indicator .live-dot{width:6px;height:6px;background:#2e7d32;border-radius:50%;animation:pulse 1s infinite}
+        .myorders-header-right{display:flex;align-items:center;gap:8px}
+        .myorders-close{background:#f5f6fa;border:none;font-size:14px;cursor:pointer;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#636e72}
+        .myorders-close:hover{background:#ff6b35;color:white}
+        .myorders-body{padding:16px 16px 40px}
+        .myorders-empty{text-align:center;padding:40px 20px;color:#dfe6e9}
+        .myorder-card{background:white;border-radius:18px;margin-bottom:14px;border:1px solid #f0f2f5;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.03);animation:fadeInUp 0.4s ease both;cursor:pointer;transition:all 0.3s}
+        .myorder-card:hover{border-color:#ff6b35;box-shadow:0 4px 20px rgba(255,107,53,0.1)}
+        .myorder-card-main{padding:16px}
+        .myorder-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+        .myorder-id{font-weight:800;color:#2d3436;font-size:15px}
+        .myorder-status-badge{padding:4px 12px;border-radius:8px;font-size:10px;font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:5px;flex-shrink:0}
+        .status-pending{background:#fff3e0;color:#e65100}
+        .status-preparing{background:#e3f2fd;color:#1565c0;animation:statusPulse 1.5s infinite}
+        .status-completed{background:#e8f5e9;color:#2e7d32}
+        .status-cancelled{background:#fce4ec;color:#c62828}
+        .myorder-details{font-size:11px;color:#b2bec3;margin-bottom:4px}
+        .myorder-items-preview{font-size:12px;color:#636e72;margin-bottom:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .myorder-bottom-row{display:flex;justify-content:space-between;align-items:center}
+        .myorder-total{font-size:18px;font-weight:900;color:#ff6b35}
+        .myorder-view-btn{background:none;border:2px solid #ff6b35;color:#ff6b35;padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s}
+        .myorder-view-btn:hover{background:#ff6b35;color:white}
+
+        /* RECEIPT */
+        .receipt-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);z-index:5500;align-items:center;justify-content:center;padding:12px}
+        .receipt-overlay.open{display:flex}
+        .receipt-modal{background:white;border-radius:24px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;animation:popIn 0.4s ease}
+        .receipt-container{padding:0}
+        .receipt-header{background:linear-gradient(135deg,#ff6b35,#f7931e);padding:24px 20px;text-align:center;color:white;border-radius:24px 24px 0 0}
+        .receipt-logo{font-size:40px;margin-bottom:8px}
+        .receipt-logo img{width:60px;height:60px;border-radius:14px;object-fit:cover}
+        .receipt-header h2{font-size:20px;font-weight:800;margin-bottom:4px}
+        .receipt-header p{font-size:12px;opacity:0.85}
+        .receipt-status{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:8px 16px;border-radius:30px;font-size:12px;font-weight:700;text-transform:uppercase}
+        .receipt-status.pending{background:rgba(255,255,255,0.2)}
+        .receipt-status.preparing{background:rgba(255,255,255,0.3);animation:statusPulse 1.5s infinite}
+        .receipt-status.completed{background:rgba(46,204,113,0.9);color:white}
+        .receipt-status.cancelled{background:rgba(231,76,60,0.9);color:white}
+        .receipt-body{padding:20px}
+        .receipt-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:2px dashed #e9ecef}
+        .receipt-info-item{text-align:center;padding:12px;background:#fafbfe;border-radius:12px}
+        .receipt-info-label{font-size:9px;color:#b2bec3;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+        .receipt-info-value{font-size:14px;font-weight:800;color:#2d3436;margin-top:4px}
+        .receipt-items-title{font-size:11px;color:#b2bec3;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+        .receipt-item{display:flex;align-items:center;gap:12px;padding:12px;background:#fafbfe;border-radius:12px;margin-bottom:8px}
+        .receipt-item-img{width:40px;height:40px;background:linear-gradient(135deg,#fff5f0,#ffe8d6);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;overflow:hidden}
+        .receipt-item-img img{width:100%;height:100%;object-fit:cover}
+        .receipt-item-details{flex:1}
+        .receipt-item-name{font-size:13px;font-weight:700;color:#2d3436}
+        .receipt-item-qty{font-size:11px;color:#b2bec3}
+        .receipt-item-price{font-size:14px;font-weight:800;color:#ff6b35}
+        .receipt-total-section{margin-top:16px;padding-top:16px;border-top:3px solid #2d3436}
+        .receipt-total-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;color:#636e72}
+        .receipt-total-row.grand-total{font-size:20px;font-weight:900;color:#2d3436;padding-top:12px;margin-top:8px;border-top:2px dashed #e9ecef}
+        .receipt-payment-info{margin-top:16px;padding:14px;background:#f8f9fa;border-radius:12px;text-align:center}
+        .receipt-payment-method{font-size:12px;color:#636e72}
+        .receipt-payment-method strong{color:#2d3436}
+        .receipt-footer{padding:20px;border-top:2px dashed #e9ecef;text-align:center}
+        .receipt-footer p{font-size:11px;color:#b2bec3;margin-bottom:4px}
+        .receipt-footer .thank-you{font-size:14px;font-weight:700;color:#ff6b35;margin-top:8px}
+        .receipt-actions{display:flex;gap:10px;padding:0 20px 20px}
+        .receipt-action-btn{flex:1;padding:14px;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px}
+        .receipt-download-btn{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white}
+        .receipt-download-btn:hover{transform:translateY(-2px)}
+        .receipt-close-btn{background:#f5f6fa;color:#636e72}
+
+        .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:white;color:#2d3436;padding:20px 28px;border-radius:18px;font-size:15px;font-weight:700;z-index:8000;opacity:0;visibility:hidden;transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 20px 60px rgba(0,0,0,0.2);max-width:85%;text-align:center;border:2px solid rgba(255,107,53,0.15);display:flex;flex-direction:column;align-items:center;gap:8px}
+        .toast.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+        .toast-icon{font-size:32px}
+        .toast-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.15);z-index:7999;opacity:0;visibility:hidden;transition:all 0.3s}
+        .toast-backdrop.show{opacity:1;visibility:visible}
+
+        .live-update-badge{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00b894,#00cec9);color:white;padding:10px 20px;border-radius:30px;font-size:12px;font-weight:700;z-index:6000;opacity:0;visibility:hidden;transition:all 0.4s;box-shadow:0 4px 20px rgba(0,184,148,0.3);display:flex;align-items:center;gap:8px}
+        .live-update-badge.show{opacity:1;visibility:visible;animation:slideInRight 0.4s ease}
+
+        footer{background:linear-gradient(135deg,#2d3436,#636e72);color:white;text-align:center;padding:50px 20px 40px;position:relative}
+        footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#ff6b35,#f7931e,#ff6b35);background-size:200% 100%;animation:gradientShift 3s ease infinite}
+        footer .footer-logo{font-size:22px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px}
+        footer .footer-logo img{width:36px;height:36px;border-radius:10px;object-fit:cover}
+        footer .footer-logo span{color:#f7931e}
+        footer .footer-tagline{color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:20px}
+        footer .copyright{color:rgba(255,255,255,0.25);font-size:11px;margin-top:18px}
+
+        .login-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);z-index:4000;align-items:center;justify-content:center;padding:16px}
+        .login-overlay.open{display:flex}
+        .login-modal{background:white;border-radius:24px;padding:36px 24px;max-width:400px;width:100%;animation:popIn 0.4s ease;text-align:center}
+        .login-modal h2{font-size:22px;color:#2d3436;font-weight:800}.login-modal .login-subtitle{color:#b2bec3;font-size:13px;margin-bottom:20px}
+        .login-form{display:flex;flex-direction:column;gap:10px}
+        .login-form input{padding:12px 16px;border:2px solid #f0f2f5;border-radius:12px;font-size:14px;font-family:'Poppins',sans-serif}
+        .login-form input:focus{outline:none;border-color:#ff6b35}
+        .login-btn{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:13px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}.login-btn:disabled{opacity:0.5}
+        .login-cancel{background:none;border:none;color:#b2bec3;font-size:13px;cursor:pointer;margin-top:4px;font-family:'Poppins',sans-serif}
+        .login-error{color:#e17055;font-size:12px;font-weight:600;display:none}.login-error.show{display:block}
+
+        .admin-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f6fa;z-index:3000;overflow-y:auto}.admin-overlay.open{display:block}
+        .admin-header{background:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;box-shadow:0 2px 20px rgba(0,0,0,0.04);gap:8px}
+        .admin-header h1{color:#2d3436;font-size:16px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:8px}
+        .admin-header h1 span{color:#ff6b35}
+        .admin-header h1 img{width:28px;height:28px;border-radius:8px;object-fit:cover}
+        .admin-close-btn{background:#f5f6fa;border:1px solid #e9ecef;color:#636e72;padding:7px 14px;border-radius:10px;cursor:pointer;font-size:12px;font-family:'Poppins',sans-serif;font-weight:600;white-space:nowrap;transition:all 0.3s}.admin-close-btn:hover{background:#ff6b35;color:white;border-color:#ff6b35}
+        .admin-body{max-width:1400px;margin:0 auto;padding:16px}
+        .admin-tabs{display:flex;gap:6px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+        .admin-tab{padding:10px 20px;border:2px solid #e9ecef;background:white;color:#636e72;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;white-space:nowrap;transition:all 0.3s;flex-shrink:0}
+        .admin-tab.active{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border-color:transparent}
+        .admin-tab-content{display:none}.admin-tab-content.active{display:block}
+
+        .admin-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+        .admin-stat-card{background:white;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;border:1px solid rgba(0,0,0,0.03)}
+        .admin-stat-icon{font-size:24px;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .admin-stat-icon.orders{background:#e8f4fd}.admin-stat-icon.revenue{background:#fff5f0}.admin-stat-icon.pending{background:#fef3e2}.admin-stat-icon.completed{background:#e6f9ed}
+        .admin-stat-info h3{font-size:20px;font-weight:900;color:#2d3436}.admin-stat-info p{font-size:11px;color:#b2bec3}
+
+        .admin-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+        .admin-toolbar h2{font-size:18px;color:#2d3436;font-weight:800}
+        .admin-toolbar-right{display:flex;gap:6px;flex-wrap:wrap}
+        .admin-filter-btn{padding:7px 14px;border:2px solid #e9ecef;background:white;color:#636e72;border-radius:10px;cursor:pointer;font-size:11px;font-weight:600;font-family:'Poppins',sans-serif}.admin-filter-btn.active{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border-color:transparent}
+        .refresh-btn{padding:7px 14px;background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;border-radius:10px;cursor:pointer;font-size:11px;font-weight:600;font-family:'Poppins',sans-serif}
+        .orders-table-wrapper{background:white;border-radius:16px;overflow-x:auto;border:1px solid rgba(0,0,0,0.03);-webkit-overflow-scrolling:touch}
+        .orders-table{width:100%;border-collapse:collapse;min-width:600px}
+        .orders-table thead{background:#fafbfe}
+        .orders-table th{padding:12px 8px;text-align:left;font-size:10px;font-weight:700;color:#ff6b35;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+        .orders-table td{padding:12px 8px;font-size:12px;border-top:1px solid #f5f6fa}.orders-table tr:hover{background:#fff9f5}
+        .order-id-cell{font-weight:800;color:#2d3436}
+        .status-select{padding:5px 8px;border:2px solid #f0f2f5;border-radius:8px;font-size:11px;font-family:'Poppins',sans-serif;cursor:pointer;font-weight:600}.status-select:focus{outline:none;border-color:#ff6b35}
+        .amount-cell{font-weight:800;color:#ff6b35;font-size:14px}.date-cell{font-size:10px;color:#b2bec3}
+        .view-btn{background:none;padding:5px 10px;border-radius:8px;cursor:pointer;font-size:10px;font-weight:700;font-family:'Poppins',sans-serif;transition:all 0.3s;border:2px solid #ff6b35;color:#ff6b35}
+        .view-btn:hover{background:#ff6b35;color:white}
+        .no-orders{text-align:center;padding:50px;color:#dfe6e9}
+
+        /* ADMIN REVIEWS */
+        .reviews-admin-grid{display:grid;gap:12px}
+        .review-admin-card{background:white;border-radius:16px;padding:16px;border:1px solid #f0f2f5;display:flex;gap:14px;align-items:flex-start}
+        .review-admin-card.pending{border-left:4px solid #f39c12}
+        .review-admin-card.approved{border-left:4px solid #00b894}
+        .review-admin-content{flex:1}
+        .review-admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+        .review-admin-name{font-weight:700;color:#2d3436}
+        .review-admin-stars{display:flex;gap:2px}
+        .review-admin-stars span{font-size:14px;color:#f39c12}
+        .review-admin-text{font-size:13px;color:#636e72;margin-bottom:8px}
+        .review-admin-date{font-size:10px;color:#b2bec3}
+        .review-admin-actions{display:flex;gap:6px;flex-shrink:0}
+        .approve-btn,.reject-btn{border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;font-family:'Poppins',sans-serif}
+        .approve-btn{background:#e8f5e9;color:#2e7d32}.approve-btn:hover{background:#2e7d32;color:white}
+        .reject-btn{background:#fce4ec;color:#c62828}.reject-btn:hover{background:#c62828;color:white}
+
+        /* SETTINGS TAB */
+        .settings-section{background:white;border-radius:20px;padding:24px;margin-bottom:20px;border:1px solid rgba(0,0,0,0.03)}
+        .settings-section h3{font-size:16px;font-weight:800;color:#2d3436;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+        .settings-row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+        .settings-preview{text-align:center}
+        .settings-preview-img{width:120px;height:120px;border-radius:20px;background:linear-gradient(135deg,#fff5f0,#ffe8d6);display:flex;align-items:center;justify-content:center;font-size:50px;margin:0 auto 12px;overflow:hidden;border:3px dashed #e9ecef}
+        .settings-preview-img img{width:100%;height:100%;object-fit:cover}
+        .settings-preview-img.has-image{border:none}
+        .settings-form{flex:1;min-width:250px}
+        .settings-group{margin-bottom:16px}
+        .settings-group label{display:block;font-size:11px;font-weight:700;color:#636e72;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+        .settings-group input[type="text"]{width:100%;padding:12px 14px;border:2px solid #f0f2f5;border-radius:12px;font-size:14px;font-family:'Poppins',sans-serif}
+        .settings-group input:focus{outline:none;border-color:#ff6b35}
+        .file-upload-wrapper{position:relative}
+        .file-upload-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.3s}
+        .file-upload-btn:hover{transform:translateY(-2px)}
+        .file-upload-wrapper input[type="file"]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
+        .upload-progress{margin-top:8px;font-size:11px;color:#636e72}
+        .settings-save-btn{background:linear-gradient(135deg,#00b894,#00cec9);color:white;border:none;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;margin-top:10px}
+        .settings-save-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+        .menu-mgmt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+        .menu-mgmt-header h2{font-size:18px;font-weight:800;color:#2d3436}
+        .add-item-btn{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;box-shadow:0 4px 15px rgba(255,107,53,0.25);transition:all 0.3s}
+        .add-item-btn:hover{transform:translateY(-2px)}
+        .menu-items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+        .menu-item-card{background:white;border-radius:16px;padding:16px;border:1px solid #f0f2f5;display:flex;gap:14px;align-items:center;transition:all 0.3s}
+        .menu-item-card:hover{border-color:rgba(255,107,53,0.2);box-shadow:0 4px 20px rgba(0,0,0,0.04)}
+        .menu-item-img{width:56px;height:56px;background:#fff5f0;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:28px;overflow:hidden}
+        .menu-item-img img{width:100%;height:100%;object-fit:cover}
+        .menu-item-info{flex:1;min-width:0}
+        .menu-item-info h4{font-size:14px;font-weight:700;color:#2d3436;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .menu-item-info .mi-cat{font-size:10px;color:#b2bec3;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+        .menu-item-info .mi-price{font-size:16px;font-weight:800;color:#ff6b35;margin-top:2px}
+        .menu-item-actions{display:flex;gap:6px;flex-shrink:0}
+        .mi-edit-btn,.mi-delete-btn{border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;font-family:'Poppins',sans-serif;transition:all 0.3s}
+        .mi-edit-btn{background:#e8f4fd;color:#0984e3}.mi-edit-btn:hover{background:#0984e3;color:white}
+        .mi-delete-btn{background:#fce4ec;color:#e74c3c}.mi-delete-btn:hover{background:#e74c3c;color:white}
+
+        .item-form-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:5500;align-items:center;justify-content:center;padding:16px}
+        .item-form-overlay.open{display:flex}
+        .item-form-modal{background:white;border-radius:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;animation:popIn 0.4s ease;padding:28px 24px}
+        .item-form-modal h2{font-size:20px;font-weight:800;color:#2d3436;margin-bottom:20px;text-align:center}
+        .item-form{display:flex;flex-direction:column;gap:12px}
+        .form-group{display:flex;flex-direction:column;gap:4px}
+        .form-group label{font-size:12px;font-weight:700;color:#636e72;text-transform:uppercase;letter-spacing:1px}
+        .form-group input,.form-group select,.form-group textarea{padding:12px 14px;border:2px solid #f0f2f5;border-radius:12px;font-size:14px;font-family:'Poppins',sans-serif;transition:all 0.3s}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#ff6b35}
+        .form-group textarea{resize:vertical;min-height:70px}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .image-preview-box{width:100%;height:150px;border:2px dashed #e9ecef;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fafbfe;cursor:pointer;transition:all 0.3s;overflow:hidden;position:relative}
+        .image-preview-box:hover{border-color:#ff6b35;background:#fff5f0}
+        .image-preview-box img{width:100%;height:100%;object-fit:cover}
+        .image-preview-box .upload-placeholder{text-align:center;color:#b2bec3}
+        .image-preview-box .upload-placeholder span{font-size:32px;display:block;margin-bottom:8px}
+        .image-preview-box input[type="file"]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
+        .form-actions{display:flex;gap:10px;margin-top:8px}
+        .form-save-btn{flex:1;background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+        .form-save-btn:disabled{opacity:0.5;cursor:not-allowed}
+        .form-cancel-btn{padding:14px 24px;background:#f5f6fa;color:#636e72;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+
+        .confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;overflow:hidden}
+        .confetti-piece{position:absolute;top:-20px;animation:confetti 3s ease-out forwards}
+        .scroll-top-btn{position:fixed;bottom:80px;right:12px;width:44px;height:44px;background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;border-radius:12px;font-size:18px;cursor:pointer;z-index:1500;opacity:0;visibility:hidden;transition:all 0.4s;box-shadow:0 6px 20px rgba(255,107,53,0.3);display:flex;align-items:center;justify-content:center}
+        .scroll-top-btn.visible{opacity:1;visibility:visible}
+
+        @media(min-width:769px){.mobile-menu-btn{display:none!important}.mobile-cart-floating{display:none!important}.myorders-overlay.open{align-items:center;padding:20px}.myorders-modal{border-radius:24px;max-height:85vh}}
+        @media(max-width:768px){
+            .nav-links,.my-orders-btn,.admin-link,.cart-btn{display:none!important}
+            .mobile-menu-btn{display:flex!important}
+            .hero{margin-top:52px;padding:60px 16px 80px}.hero h1{font-size:28px;letter-spacing:-1px}.hero p{font-size:14px}.hero-logo{width:270px;height:350px;border-radius:18px}.hero-btn{padding:12px 24px;font-size:14px}.hero-stats{gap:24px}.hero-stat h3{font-size:20px}
+            .category-section{padding:50px 12px 16px}.section-title{font-size:24px}.filter-btn{padding:8px 14px;font-size:12px}
+            .search-sort-bar{flex-direction:column;align-items:stretch;padding:0 12px}.search-box{max-width:100%;min-width:auto}.sort-select{width:100%}
+            .menu-section{padding:0 10px}.drinks-grid{grid-template-columns:repeat(2,1fr);gap:10px}.drink-img{height:130px;font-size:50px}.drink-info{padding:12px}.drink-info h3{font-size:13px;margin:4px 0}.drink-info .description{font-size:10px;margin-bottom:10px;-webkit-line-clamp:1}.price{font-size:16px}.add-btn{padding:8px 12px;font-size:11px;border-radius:10px}
+            .admin-stats{grid-template-columns:repeat(2,1fr)}.menu-items-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}
+            .reviews-grid{grid-template-columns:1fr}
+            .settings-row{flex-direction:column}
+            footer{padding-bottom:70px}
+        }
+        @media(max-width:380px){.drinks-grid{grid-template-columns:1fr}.hero h1{font-size:24px}.hero-stats{flex-wrap:wrap;gap:16px}.admin-stats{grid-template-columns:1fr}}
+    </style>
 </head>
-<body style="font-family: Arial;">
-    <h1 style="color: green;">✅ IT WORKS! Your site is live!</h1>
-    <p>URL: https://yourusername.github.io</p>
-    <p>Repo: <a href="https://github.com/aiayam/jigarthanda-cafe.github.io">View source</a></p>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div id="loadingLogo" class="loading-logo-emoji">🧊</div>
+        <p id="loadingSiteName">Jigarthanda Cafe</p>
+        <p class="loading-detail" id="loadingDetail">Connecting...</p>
+        <div class="loading-bar"><div class="loading-bar-inner"></div></div>
+    </div>
+
+    <header id="mainHeader"><nav>
+        <a href="#" class="logo">
+            <div class="logo-icon" id="headerLogoIcon">🧊</div>
+            <span id="headerSiteName">jigarthanda</span><span>cafe</span>
+        </a>
+        <ul class="nav-links"><li><a href="#home" class="active">Home</a></li><li><a href="#menu">Menu</a></li><li><a href="#reviews">Reviews</a></li></ul>
+        <div class="nav-right">
+            <button class="my-orders-btn" onclick="openMyOrders()">📦 My Orders</button>
+            <a href="#" class="admin-link" onclick="event.preventDefault();openLogin()">Admin</a>
+            <button class="cart-btn" onclick="toggleCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav></header>
+
+    <div class="mobile-menu" id="mobileMenu"><div class="mobile-menu-backdrop" onclick="closeMobileMenu()"></div><div class="mobile-menu-panel"><ul class="mobile-menu-nav">
+        <li><a href="#home" onclick="closeMobileMenu()"><span class="menu-icon">🏠</span> Home</a></li>
+        <li><a href="#menu" onclick="closeMobileMenu()"><span class="menu-icon">🍹</span> Menu</a></li>
+        <li><a href="#reviews" onclick="closeMobileMenu()"><span class="menu-icon">⭐</span> Reviews</a></li>
+        <li class="mobile-menu-divider"></li>
+        <li><button onclick="closeMobileMenu();openMyOrders()"><span class="menu-icon">📦</span> My Orders</button></li>
+        <li><button onclick="closeMobileMenu();openLogin()"><span class="menu-icon">🔐</span> Admin</button></li>
+        <li class="mobile-menu-divider"></li>
+        <li><button class="mobile-menu-cart-btn" onclick="closeMobileMenu();toggleCart()"><span>🛒</span> View Cart <span class="mobile-menu-cart-count" id="mobileCartCount">0</span></button></li>
+    </ul></div></div>
+
+    <button class="mobile-cart-floating" id="mobileCartFloat" onclick="toggleCart()"><div class="mcf-left"><span>🛒</span> <span id="mcfText">View Cart</span></div><div class="mcf-count" id="mcfCount">0</div></button>
+
+    <div class="live-update-badge" id="liveUpdateBadge">🔔 Order Updated!</div>
+
+    <section class="hero" id="home"><div class="hero-particles" id="heroParticles"></div><div class="hero-content">
+        <div class="hero-badge"><span class="hero-badge-dot"></span> Now Open — Freshly Crafted</div>
+        <div id="heroLogo" class="hero-emoji">🧊</div>
+        <h1>Welcome to<br><span class="highlight" id="heroSiteName">Jigarthanda Cafe</span></h1>
+        <p>Penang’s Famous Jigarthanda Dawood Restaurant – Established 2000</p>
+        <div class="hero-btns"><button class="hero-btn hero-btn-primary" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">Explore Menu →</button><button class="hero-btn hero-btn-secondary" onclick="openMyOrders()">Track Order 📦</button></div>
+        <div class="hero-stats"><div class="hero-stat"><h3 id="statDrinks"></h3><p></p></div><div class="hero-stat"><h3 id="statRating"></h3><p></p></div><div class="hero-stat"><h3 id="statCustomers"></h3><p></p></div></div>
+    </div></section>
+
+    <section class="reviews-section" id="reviews">
+        <div class="reviews-header">
+            <div class="section-tag">⭐ Customer Reviews</div>
+            <h2>What People Say</h2>
+            <p>Real reviews from our happy customers</p>
+        </div>
+        <div class="reviews-grid" id="reviewsGrid"><div class="no-reviews">Loading reviews...</div></div>
+    </section>
+
+    <section class="category-section" id="menu"><div class="section-tag">🍹 Our Menu</div><h2 class="section-title">Explore Drinks</h2><p class="section-subtitle">Filter, search, or sort to find your drink</p>
+        <div class="filter-bar" id="categoryFilters"><button class="filter-btn active" onclick="filterDrinks('all',this)">🍹 All</button></div>
+    </section>
+
+    <div class="search-sort-bar">
+        <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="Search drinks..." oninput="applyFilters()"></div>
+        <select class="sort-select" id="sortSelect" onchange="applyFilters()"><option value="default">Sort: Default</option><option value="price-low">Price: Low → High</option><option value="price-high">Price: High → Low</option><option value="name-az">Name: A → Z</option></select>
+    </div>
+    <div class="results-count" id="resultsCount"></div>
+
+    <section class="menu-section"><div class="drinks-grid" id="drinksGrid">
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div></div>
+    </div></section>
+
+    <footer>
+        <div class="footer-logo" id="footerLogo">🧊 jigarthanda<span>cafe</span></div>
+        <p class="footer-tagline">“Crafted to Perfection, Signature Experience in Every Sip”</p>
+        <p class="copyright">© 2026 Jigarthanda Cafe - Penang’s Famous Jigarthanda Dawood Restaurant – Established 2000</p>
+    </footer>
+    <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <!-- OVERLAYS -->
+    <div class="cart-overlay" id="cartOverlay" onclick="if(event.target.id==='cartOverlay')toggleCart()"><div class="cart-panel"><div class="cart-header"><h2>🛒 Cart</h2><button class="close-cart" onclick="toggleCart()">✕</button></div><div id="cartItems"></div><div id="cartFooter"></div></div></div>
+    <div class="payment-overlay" id="paymentOverlay"><div class="payment-modal" id="paymentModal"></div></div>
+    
+    <div class="review-overlay" id="reviewOverlay">
+        <div class="review-modal">
+            <div class="review-modal-header"><h2>⭐ Rate Your Experience</h2><p>Your feedback helps us improve!</p></div>
+            <div class="review-modal-body">
+                <div class="star-rating" id="starRating">
+                    <span onclick="setRating(1)">★</span><span onclick="setRating(2)">★</span><span onclick="setRating(3)">★</span><span onclick="setRating(4)">★</span><span onclick="setRating(5)">★</span>
+                </div>
+                <textarea class="review-textarea" id="reviewText" placeholder="Tell us about your experience... (optional)"></textarea>
+                <div class="review-modal-actions">
+                    <button class="review-skip-btn" onclick="closeReviewModal()">Skip</button>
+                    <button class="review-submit-btn" id="reviewSubmitBtn" onclick="submitReview()">Submit Review</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="myorders-overlay" id="myordersOverlay" onclick="if(event.target.id==='myordersOverlay')closeMyOrders()"><div class="myorders-modal"><div class="myorders-header"><h2>📦 My Orders <span class="live-indicator"><span class="live-dot"></span>LIVE</span></h2><div class="myorders-header-right"><button class="myorders-close" onclick="closeMyOrders()">✕</button></div></div><div class="myorders-body" id="myordersBody"></div></div></div>
+    
+    <div class="receipt-overlay" id="receiptOverlay" onclick="if(event.target.id==='receiptOverlay')closeReceipt()">
+        <div class="receipt-modal">
+            <div class="receipt-container" id="receiptContent"></div>
+            <div class="receipt-actions">
+                <button class="receipt-action-btn receipt-download-btn" onclick="downloadReceipt()">📥 Download</button>
+                <button class="receipt-action-btn receipt-close-btn" onclick="closeReceipt()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="login-overlay" id="loginOverlay" onclick="if(event.target.id==='loginOverlay')closeLogin()"><div class="login-modal"><div style="font-size:36px;margin-bottom:10px">🔐</div><h2>Admin Login</h2><p class="login-subtitle">Enter credentials</p><form class="login-form" onsubmit="handleLogin(event)"><input type="text" id="loginUsername" placeholder="Username" required autocomplete="off"><input type="password" id="loginPassword" placeholder="Password" required><p class="login-error" id="loginError">Invalid credentials</p><button type="submit" class="login-btn" id="loginBtn">Login →</button><button type="button" class="login-cancel" onclick="closeLogin()">Cancel</button></form></div></div>
+
+    <!-- ADMIN -->
+    <div class="admin-overlay" id="adminOverlay">
+        <div class="admin-header">
+            <h1 id="adminHeaderTitle">☕ <span>Admin</span></h1>
+            <button class="admin-close-btn" onclick="closeAdmin()">← Back</button>
+        </div>
+        <div class="admin-body">
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('orders',this)">📋 Orders</button>
+                <button class="admin-tab" onclick="switchAdminTab('reviews',this)">⭐ Reviews</button>
+                <button class="admin-tab" onclick="switchAdminTab('menu',this)">🍹 Menu</button>
+                <button class="admin-tab" onclick="switchAdminTab('settings',this)">⚙️ Settings</button>
+            </div>
+
+            <div class="admin-tab-content active" id="adminTabOrders">
+                <div class="admin-stats">
+                    <div class="admin-stat-card"><div class="admin-stat-icon orders">📦</div><div class="admin-stat-info"><h3 id="totalOrders">0</h3><p>Orders</p></div></div>
+                    <div class="admin-stat-card"><div class="admin-stat-icon revenue">💰</div><div class="admin-stat-info"><h3 id="totalRevenue">RM0</h3><p>Revenue</p></div></div>
+                    <div class="admin-stat-card"><div class="admin-stat-icon pending">⏳</div><div class="admin-stat-info"><h3 id="pendingOrders">0</h3><p>Pending</p></div></div>
+                    <div class="admin-stat-card"><div class="admin-stat-icon completed">✅</div><div class="admin-stat-info"><h3 id="completedOrders">0</h3><p>Done</p></div></div>
+                </div>
+                <div class="admin-toolbar"><h2>📋 Orders</h2><div class="admin-toolbar-right"><button class="admin-filter-btn active" onclick="filterOrders('all',this)">All</button><button class="admin-filter-btn" onclick="filterOrders('pending',this)">Pending</button><button class="admin-filter-btn" onclick="filterOrders('completed',this)">Done</button><button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button></div></div>
+                <div class="orders-table-wrapper"><table class="orders-table"><thead><tr><th>ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody id="ordersTableBody"><tr><td colspan="6" class="no-orders">Loading...</td></tr></tbody></table></div>
+            </div>
+
+            <div class="admin-tab-content" id="adminTabReviews">
+                <div class="admin-toolbar"><h2>⭐ Customer Reviews</h2><div class="admin-toolbar-right"><button class="admin-filter-btn active" onclick="filterAdminReviews('pending',this)">Pending</button><button class="admin-filter-btn" onclick="filterAdminReviews('approved',this)">Approved</button><button class="admin-filter-btn" onclick="filterAdminReviews('all',this)">All</button></div></div>
+                <div class="reviews-admin-grid" id="adminReviewsGrid"><p style="color:#b2bec3;padding:40px;text-align:center">Loading...</p></div>
+            </div>
+
+            <div class="admin-tab-content" id="adminTabMenu">
+                <div class="menu-mgmt-header"><h2>🍹 Menu Items</h2><button class="add-item-btn" onclick="openItemForm()">+ Add Item</button></div>
+                <div class="menu-items-grid" id="menuItemsGrid"><p style="color:#b2bec3;padding:40px;text-align:center">Loading...</p></div>
+            </div>
+
+            <div class="admin-tab-content" id="adminTabSettings">
+                <div class="settings-section">
+                    <h3>🖼️ Logo Settings</h3>
+                    <div class="settings-row">
+                        <div class="settings-preview">
+                            <div class="settings-preview-img" id="logoPreview">🧊</div>
+                            <p style="font-size:11px;color:#b2bec3;margin-top:8px">Current Logo</p>
+                        </div>
+                        <div class="settings-form">
+                            <div class="settings-group">
+                                <label>Upload New Logo</label>
+                                <div class="file-upload-wrapper">
+                                    <div class="file-upload-btn">📤 Choose Image</div>
+                                    <input type="file" id="logoFileInput" accept="image/*" onchange="handleLogoUpload(this)">
+                                </div>
+                                <p class="upload-progress" id="logoUploadProgress"></p>
+                            </div>
+                            <div class="settings-group">
+                                <label>Or Enter Image URL</label>
+                                <input type="text" id="logoUrlInput" placeholder="https://example.com/logo.png">
+                            </div>
+                            <button class="settings-save-btn" onclick="saveLogo()">💾 Save Logo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>📝 Site Name</h3>
+                    <div class="settings-form">
+                        <div class="settings-group">
+                            <label>Cafe Name</label>
+                            <input type="text" id="siteNameInput" placeholder="Jigarthanda Cafe">
+                        </div>
+                        <button class="settings-save-btn" onclick="saveSiteName()">💾 Save Name</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ITEM FORM -->
+    <div class="item-form-overlay" id="itemFormOverlay" onclick="if(event.target.id==='itemFormOverlay')closeItemForm()">
+        <div class="item-form-modal">
+            <h2 id="itemFormTitle">Add Item</h2>
+            <form class="item-form" id="itemForm" onsubmit="saveItem(event)">
+                <input type="hidden" id="itemId">
+                <input type="hidden" id="itemImageUrl">
+                
+                <div class="form-group">
+                    <label>Item Image</label>
+                    <div class="image-preview-box" id="itemImagePreview">
+                        <div class="upload-placeholder">
+                            <span>📷</span>
+                            <p>Click to upload image</p>
+                        </div>
+                        <input type="file" accept="image/*" onchange="handleItemImageUpload(this)">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group"><label>Name</label><input type="text" id="itemName" required></div>
+                    <div class="form-group"><label>Emoji (fallback)</label><input type="text" id="itemEmoji" placeholder="🧊"></div>
+                </div>
+                <div class="form-group"><label>Description</label><textarea id="itemDesc"></textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Price (RM)</label><input type="number" id="itemPrice" step="0.01" min="0" required></div>
+                    <div class="form-group"><label>Category</label><select id="itemCategory"></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Badge</label><input type="text" id="itemBadge" placeholder="Bestseller"></div>
+                    <div class="form-group"><label>Order</label><input type="number" id="itemOrder" min="0" value="0"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="form-save-btn" id="itemSaveBtn">Save Item</button>
+                    <button type="button" class="form-cancel-btn" onclick="closeItemForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-backdrop" id="toastBackdrop"></div>
+    <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMsg"></span></div>
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    const SB_URL='https://lujvipglowanpauxwwgd.supabase.co';
+    const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1anZpcGdsb3dhbnBhdXh3d2dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwODc4MDcsImV4cCI6MjA4NjY2MzgwN30.ZcKhM1Qs5V5cBClEuQclbACcEdem7nlGfMuSZjcMVaM';
+    let db,allDrinks=[],allCategories=[],cart=[],allOrders=[],myOrders=[],allReviews=[],siteSettings={};
+    let currentCategory='all',currentStatusFilter='all',currentReviewFilter='pending';
+    let currentReceiptOrder=null,pendingReviewOrder=null,selectedRating=5;
+    let orderPollingInterval=null;
+
+    function createParticles(){const c=document.getElementById('heroParticles');['🧊','🥤','🍹','✨'].forEach((_,i)=>{const p=document.createElement('span');p.className='particle';p.textContent=['🧊','🥤','🍹','✨'][i%4];p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*8+'s';p.style.animationDuration=(6+Math.random()*6)+'s';c.appendChild(p)})}
+    createParticles();
+
+    function toggleMobileMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+    function closeMobileMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+    function updateMobileCart(){const cnt=cart.reduce((s,i)=>s+i.quantity,0);const t=cart.reduce((s,i)=>s+i.price*i.quantity,0);document.getElementById('mobileCartCount').textContent=cnt;document.getElementById('mcfCount').textContent=cnt;document.getElementById('mcfText').textContent=cnt>0?'Cart · RM'+t.toFixed(2):'View Cart';document.getElementById('mobileCartFloat').style.display=(window.innerWidth<=768&&cnt>0)?'flex':'none'}
+    window.addEventListener('scroll',()=>{document.getElementById('mainHeader').classList.toggle('scrolled',window.scrollY>80);document.getElementById('scrollTopBtn').classList.toggle('visible',window.scrollY>400)});
+    window.addEventListener('resize',updateMobileCart);
+
+    function showConfetti(){const c=document.getElementById('confettiContainer');const cols=['#ff6b35','#f7931e','#00b894','#0984e3'];for(let i=0;i<30;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.left=Math.random()*100+'%';p.style.background=cols[Math.floor(Math.random()*cols.length)];p.style.animationDelay=Math.random()*2+'s';p.style.width=(5+Math.random()*5)+'px';p.style.height=(5+Math.random()*5)+'px';c.appendChild(p)}setTimeout(()=>c.innerHTML='',5000)}
+
+    let toastTimer=null;
+    function showToast(m,icon='✅'){const t=document.getElementById('toast');const bg=document.getElementById('toastBackdrop');document.getElementById('toastMsg').textContent=m;document.getElementById('toastIcon').textContent=icon;t.classList.add('show');bg.classList.add('show');if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.classList.remove('show');bg.classList.remove('show')},2000)}
+
+    function showLiveUpdate(message){const badge=document.getElementById('liveUpdateBadge');badge.textContent='🔔 '+message;badge.classList.add('show');setTimeout(()=>badge.classList.remove('show'),3000)}
+
+    // INIT
+    async function initApp(){
+        const ld=document.getElementById('loadingDetail');
+        try{
+            ld.textContent='Connecting...';
+            db=window.supabase.createClient(SB_URL,SB_KEY);
+            
+            ld.textContent='Loading settings...';
+            await loadSiteSettings();
+            
+            ld.textContent='Loading menu...';
+            const[cR,dR]=await Promise.all([
+                db.from('categories').select('*').order('display_order'),
+                db.from('drinks').select('*,categories(*)').eq('is_available',true).order('display_order')
+            ]);
+            if(cR.error)throw cR.error;
+            if(dR.error)throw dR.error;
+            allCategories=cR.data||[];
+            allDrinks=dR.data||[];
+            
+            renderCatBtns();
+            renderDrinks(allDrinks);
+            await loadMyOrdersFromDB();
+            await loadApprovedReviews();
+            startOrderPolling();
+        }catch(e){
+            console.error(e);
+            document.getElementById('drinksGrid').innerHTML='<div class="no-drinks"><p style="font-size:50px">😥</p><h3>Cannot load</h3><p>'+e.message+'</p></div>';
+        }finally{
+            setTimeout(()=>document.getElementById('loadingScreen').classList.add('hidden'),500);
+        }
+    }
+
+    // SITE SETTINGS
+    async function loadSiteSettings(){
+        try{
+            const{data}=await db.from('site_settings').select('*');
+            if(data){
+                data.forEach(s=>{siteSettings[s.setting_key]=s.setting_value});
+                applySiteSettings();
+            }
+        }catch(e){console.log('Settings error:',e)}
+    }
+
+    function applySiteSettings(){
+        const logoUrl=siteSettings.logo_url;
+        const siteName=siteSettings.site_name||'Jigarthanda Cafe';
+        
+        // Update all logo instances
+        if(logoUrl){
+            document.getElementById('loadingLogo').innerHTML=`<img src="${logoUrl}" class="loading-logo" alt="Logo">`;
+            document.getElementById('headerLogoIcon').innerHTML=`<img src="${logoUrl}" alt="Logo">`;
+            document.getElementById('heroLogo').innerHTML=`<img src="${logoUrl}" class="hero-logo" alt="Logo">`;
+            document.getElementById('heroLogo').className='';
+            document.getElementById('footerLogo').innerHTML=`<img src="${logoUrl}" alt="Logo"> ${siteName}`;
+        }
+        
+        // Update site name
+        document.getElementById('loadingSiteName').textContent=siteName;
+        document.getElementById('heroSiteName').textContent=siteName;
+        document.title=siteName;
+    }
+
+    // ORDER POLLING (Every 3 seconds)
+    function startOrderPolling(){
+        if(orderPollingInterval)clearInterval(orderPollingInterval);
+        orderPollingInterval=setInterval(async()=>{
+            const orderIds=JSON.parse(localStorage.getItem('jc_user_order_ids')||'[]');
+            if(!orderIds.length)return;
+            try{
+                const{data}=await db.from('orders').select('id,status').in('id',orderIds);
+                if(data){
+                    let hasUpdate=false;
+                    data.forEach(order=>{
+                        const local=myOrders.find(o=>o.orderId===order.id);
+                        if(local&&local.status!==order.status){
+                            local.status=order.status;
+                            hasUpdate=true;
+                            showLiveUpdate('Order #'+order.id+' is now '+order.status.toUpperCase());
+                        }
+                    });
+                    if(hasUpdate){
+                        if(document.getElementById('myordersOverlay').classList.contains('open'))renderMyOrdersCards();
+                        if(document.getElementById('receiptOverlay').classList.contains('open')&&currentReceiptOrder){
+                            const updated=myOrders.find(o=>o.orderId===currentReceiptOrder.orderId);
+                            if(updated)showReceipt(updated);
+                        }
+                    }
+                }
+            }catch(e){console.log('Polling error:',e)}
+        },3000);
+    }
+
+    function renderCatBtns(){const c=document.getElementById('categoryFilters');c.innerHTML='<button class="filter-btn active" onclick="filterDrinks(\'all\',this)">🍹 All</button>';allCategories.forEach(cat=>{const b=document.createElement('button');b.className='filter-btn';b.textContent=(cat.emoji||'')+' '+cat.name;b.onclick=function(){filterDrinks(cat.id,this)};c.appendChild(b)})}
+    
+    function renderDrinks(list){
+        const g=document.getElementById('drinksGrid');
+        g.innerHTML='';
+        if(!list||!list.length){
+            g.innerHTML='<div class="no-drinks"><p style="font-size:50px;opacity:0.5">🔍</p><h3>No drinks found</h3></div>';
+            document.getElementById('resultsCount').textContent='';
+            return;
+        }
+        document.getElementById('resultsCount').textContent='Showing '+list.length+' drink'+(list.length>1?'s':'');
+        list.forEach((d,i)=>{
+            const cn=d.categories?d.categories.name:'';
+            const bc=getBc(d.badge);
+            const imgContent=d.image_url?`<img src="${d.image_url}" alt="${d.name}">`:(d.emoji||'🧊');
+            const c=document.createElement('div');
+            c.className='drink-card';
+            c.style.animationDelay=(i*0.05)+'s';
+            c.innerHTML=(d.badge?'<div class="badge '+bc+'">'+d.badge+'</div>':'')+'<div class="drink-img">'+imgContent+'</div><div class="drink-info"><div class="category-tag">'+cn+'</div><h3>'+d.name+'</h3><p class="description">'+(d.description||'Handcrafted drink')+'</p><div class="drink-bottom"><span class="price"><span class="currency">RM</span>'+parseFloat(d.price).toFixed(2)+'</span><button class="add-btn" onclick="addToCart('+d.id+',this)">Add +</button></div></div>';
+            g.appendChild(c);
+        });
+    }
+    
+    function getBc(b){if(!b)return'';b=b.toLowerCase();if(b.includes('best'))return'badge-bestseller';if(b.includes('new'))return'badge-new';if(b.includes('popular'))return'badge-popular';if(b.includes('premium'))return'badge-premium';return'badge-default'}
+    function filterDrinks(cid,btn){currentCategory=cid;document.querySelectorAll('.filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilters()}
+    function applyFilters(){let list=[...allDrinks];if(currentCategory!=='all')list=list.filter(d=>d.category_id===currentCategory);const s=document.getElementById('searchInput').value.trim().toLowerCase();if(s)list=list.filter(d=>d.name.toLowerCase().includes(s));const so=document.getElementById('sortSelect').value;if(so==='price-low')list.sort((a,b)=>a.price-b.price);else if(so==='price-high')list.sort((a,b)=>b.price-a.price);else if(so==='name-az')list.sort((a,b)=>a.name.localeCompare(b.name));renderDrinks(list)}
+
+    // REVIEWS
+    async function loadApprovedReviews(){
+        try{
+            const{data,error}=await db.from('reviews').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(12);
+            if(error)throw error;
+            allReviews=data||[];
+            renderPublicReviews();
+            updateRatingStats();
+        }catch(e){
+            console.log('Reviews error:',e);
+            document.getElementById('reviewsGrid').innerHTML='<div class="no-reviews"><p style="font-size:40px">⭐</p><p>No reviews yet</p></div>';
+        }
+    }
+
+    function renderPublicReviews(){
+        const grid=document.getElementById('reviewsGrid');
+        if(!allReviews.length){
+            grid.innerHTML='<div class="no-reviews"><p style="font-size:40px">⭐</p><p>No reviews yet. Be the first!</p></div>';
+            return;
+        }
+        grid.innerHTML=allReviews.map(r=>{
+            const stars=Array(5).fill(0).map((_,i)=>`<span ${i<r.rating?'':'class="empty"'}>★</span>`).join('');
+            const initial=r.customer_name?r.customer_name.charAt(0).toUpperCase():'?';
+            const d=new Date(r.created_at);
+            return`<div class="review-card"><div class="review-card-header"><div class="review-avatar">${initial}</div><div class="review-author"><h4>${r.customer_name||'Customer'}</h4><p>${d.toLocaleDateString()}</p></div><div class="review-stars">${stars}</div></div><p class="review-text">${r.review_text||'Great experience!'}</p></div>`;
+        }).join('');
+    }
+
+    function updateRatingStats(){
+        if(!allReviews.length)return;
+        const avg=(allReviews.reduce((s,r)=>s+r.rating,0)/allReviews.length).toFixed(1);
+        document.getElementById('statRating').textContent=avg+'★';
+    }
+
+    function openReviewModal(order){pendingReviewOrder=order;selectedRating=5;updateStarUI();document.getElementById('reviewText').value='';document.getElementById('reviewOverlay').classList.add('open')}
+    function closeReviewModal(){document.getElementById('reviewOverlay').classList.remove('open');pendingReviewOrder=null}
+    function setRating(r){selectedRating=r;updateStarUI()}
+    function updateStarUI(){document.querySelectorAll('#starRating span').forEach((s,i)=>{s.classList.toggle('active',i<selectedRating)})}
+
+    async function submitReview(){
+        if(!pendingReviewOrder)return;
+        const btn=document.getElementById('reviewSubmitBtn');
+        btn.disabled=true;btn.textContent='Submitting...';
+        try{
+            const text=document.getElementById('reviewText').value.trim();
+            await db.from('reviews').insert({order_id:pendingReviewOrder.orderId,customer_name:pendingReviewOrder.name,rating:selectedRating,review_text:text||null,status:'pending'});
+            closeReviewModal();
+            showToast('Thank you for your review!','⭐');
+        }catch(e){showToast('Failed to submit','❌')}finally{btn.disabled=false;btn.textContent='Submit Review'}
+    }
+
+    // CART
+    function addToCart(id,btn){
+        const d=allDrinks.find(x=>x.id===id);
+        if(!d)return;
+        const ex=cart.find(i=>i.id===id);
+        if(ex)ex.quantity++;
+        else cart.push({id:d.id,name:d.name,price:parseFloat(d.price),emoji:d.emoji||'🧊',image_url:d.image_url,quantity:1});
+        updateCartUI();
+        if(btn){btn.classList.add('added');btn.textContent='Added ✓';setTimeout(()=>{btn.classList.remove('added');btn.textContent='Add +'},1000)}
+        showToast(d.name+' added!','🛒');
+    }
+    function removeFromCart(id){cart=cart.filter(i=>i.id!==id);updateCartUI()}
+    function changeQty(id,d){const i=cart.find(x=>x.id===id);if(!i)return;i.quantity+=d;if(i.quantity<=0){removeFromCart(id);return}updateCartUI()}
+    function updateCartUI(){
+        const cnt=cart.reduce((s,i)=>s+i.quantity,0);
+        const ce=document.getElementById('cartCount');
+        ce.textContent=cnt;ce.classList.remove('bump');void ce.offsetWidth;ce.classList.add('bump');
+        document.getElementById('mobileCartCount').textContent=cnt;
+        updateMobileCart();
+        const ci=document.getElementById('cartItems'),cf=document.getElementById('cartFooter');
+        if(!cart.length){
+            ci.innerHTML='<div class="empty-cart"><p style="font-size:50px;opacity:0.3">🧊</p><p><strong>Cart is empty</strong></p></div>';
+            cf.innerHTML='';
+            return;
+        }
+        ci.innerHTML=cart.map(i=>{
+            const imgContent=i.image_url?`<img src="${i.image_url}" alt="${i.name}">`:i.emoji;
+            return`<div class="cart-item"><div class="cart-item-img">${imgContent}</div><div class="cart-item-details"><h4>${i.name}</h4><div class="item-price">RM${(i.price*i.quantity).toFixed(2)}</div><div class="quantity-controls"><button class="qty-btn" onclick="changeQty(${i.id},-1)">−</button><span class="qty-number">${i.quantity}</span><button class="qty-btn" onclick="changeQty(${i.id},1)">+</button></div></div><button class="remove-btn" onclick="removeFromCart(${i.id})">✕</button></div>`;
+        }).join('');
+        const t=cart.reduce((s,i)=>s+i.price*i.quantity,0);
+        cf.innerHTML='<div class="cart-total"><span>Total</span><span class="total-amount">RM'+t.toFixed(2)+'</span></div><div class="checkout-form"><input type="text" id="checkoutName" placeholder="Your Name" required><button class="checkout-btn" onclick="goToPayment()">Proceed to Payment →</button></div>';
+    }
+    function toggleCart(){document.getElementById('cartOverlay').classList.toggle('open')}
+
+    // PAYMENT
+    let pendingOrderData=null,selectedPayment='cash';
+    function goToPayment(){
+        if(!cart.length)return;
+        const name=document.getElementById('checkoutName').value.trim();
+        if(!name){showToast('Enter your name','⚠️');return}
+        const total=cart.reduce((s,i)=>s+i.price*i.quantity,0);
+        pendingOrderData={name,items:cart.map(i=>({...i})),total};
+        let ih=cart.map(i=>'<div class="payment-item"><span class="p-name">'+(i.emoji||'🧊')+' '+i.name+' ×'+i.quantity+'</span><span class="p-price">RM'+(i.price*i.quantity).toFixed(2)+'</span></div>').join('');
+        document.getElementById('paymentModal').innerHTML='<div class="payment-header"><h2>💳 Payment</h2><p>Order for '+name+'</p></div><div class="payment-order-summary"><h3>Summary</h3>'+ih+'<div class="payment-total-box"><span>TOTAL</span><span>RM'+total.toFixed(2)+'</span></div></div><div class="payment-methods"><h3>Payment Method</h3><div class="payment-option selected" onclick="selectPayment(\'cash\',this)"><div class="payment-radio"></div><div class="payment-option-info"><div class="payment-option-title">💵 Cash</div><div class="payment-option-desc">Pay at counter</div></div></div><div class="payment-option" onclick="selectPayment(\'qr\',this)"><div class="payment-radio"></div><div class="payment-option-info"><div class="payment-option-title">📱 QR / Online</div><div class="payment-option-desc">Scan to pay</div></div></div></div><div class="payment-actions"><button class="pay-btn pay-confirm-btn" id="payConfirmBtn" onclick="confirmOrder()">✅ Confirm Order</button><button class="pay-btn pay-cancel-btn" onclick="closePayment()">Cancel</button></div>';
+        toggleCart();
+        document.getElementById('paymentOverlay').classList.add('open');
+    }
+    function selectPayment(m,el){selectedPayment=m;document.querySelectorAll('.payment-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected')}
+    function closePayment(){document.getElementById('paymentOverlay').classList.remove('open');pendingOrderData=null}
+
+    async function confirmOrder(){
+        if(!pendingOrderData)return;
+        const btn=document.getElementById('payConfirmBtn');
+        btn.disabled=true;btn.textContent='Processing...';
+        try{
+            const d=pendingOrderData;
+            const{data:order,error:oE}=await db.from('orders').insert({customer_name:d.name,total_amount:d.total,status:'pending',payment_method:selectedPayment,payment_status:selectedPayment==='cash'?'pay at counter':'paid online'}).select().single();
+            if(oE)throw oE;
+            const items=d.items.map(i=>({order_id:order.id,drink_id:i.id,drink_name:i.name,quantity:i.quantity,unit_price:i.price,subtotal:i.price*i.quantity}));
+            await db.from('order_items').insert(items);
+            let userOrderIds=JSON.parse(localStorage.getItem('jc_user_order_ids')||'[]');
+            if(!userOrderIds.includes(order.id)){userOrderIds.push(order.id);localStorage.setItem('jc_user_order_ids',JSON.stringify(userOrderIds))}
+            const newOrder={orderId:order.id,name:d.name,items:d.items,total:d.total,date:order.created_at,paymentMethod:selectedPayment,status:'pending'};
+            myOrders.unshift(newOrder);
+            closePayment();cart=[];document.getElementById('cartCount').textContent='0';updateCartUI();
+            showConfetti();showToast('Order #'+order.id+' placed!','🎉');
+            setTimeout(()=>{showReceipt(newOrder);setTimeout(()=>openReviewModal(newOrder),1500)},500);
+        }catch(e){showToast('Failed: '+e.message,'❌');btn.disabled=false;btn.textContent='✅ Confirm Order'}
+    }
+
+    // MY ORDERS
+    async function loadMyOrdersFromDB(){
+        try{
+            const orderIds=JSON.parse(localStorage.getItem('jc_user_order_ids')||'[]');
+            if(!orderIds.length){myOrders=[];return}
+            const{data,error}=await db.from('orders').select('*').in('id',orderIds).order('created_at',{ascending:false});
+            if(error)throw error;
+            myOrders=[];
+            for(let order of(data||[])){
+                const{data:items}=await db.from('order_items').select('*').eq('order_id',order.id);
+                myOrders.push({orderId:order.id,name:order.customer_name,items:(items||[]).map(i=>({id:i.drink_id,name:i.drink_name,quantity:i.quantity,price:i.unit_price,emoji:'🧊'})),total:order.total_amount,date:order.created_at,paymentMethod:order.payment_method,status:order.status});
+            }
+        }catch(e){console.error(e)}
+    }
+
+    function openMyOrders(){renderMyOrdersCards();document.getElementById('myordersOverlay').classList.add('open')}
+    function closeMyOrders(){document.getElementById('myordersOverlay').classList.remove('open')}
+
+    function renderMyOrdersCards(){
+        const body=document.getElementById('myordersBody');
+        if(!myOrders.length){body.innerHTML='<div class="myorders-empty"><p style="font-size:45px">📦</p><p style="font-weight:700;color:#636e72;margin-top:10px">No orders yet</p></div>';return}
+        body.innerHTML=myOrders.map(o=>{
+            const d=new Date(o.date);const st=o.status||'pending';
+            const sc={pending:'status-pending',preparing:'status-preparing',completed:'status-completed',cancelled:'status-cancelled'}[st];
+            const statusIcon={pending:'⏳',preparing:'👨‍🍳',completed:'✅',cancelled:'❌'}[st]||'⏳';
+            const statusText={pending:'Pending',preparing:'Preparing',completed:'Ready',cancelled:'Cancelled'}[st]||st;
+            const items=o.items.map(i=>(i.emoji||'🧊')+' '+i.name+' ×'+i.quantity).join(', ');
+            return`<div class="myorder-card" onclick="showReceipt(myOrders.find(x=>x.orderId===${o.orderId}))"><div class="myorder-card-main"><div class="myorder-top"><span class="myorder-id">#${o.orderId}</span><span class="myorder-status-badge ${sc}">${statusIcon} ${statusText}</span></div><div class="myorder-details">${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div><div class="myorder-items-preview">${items}</div><div class="myorder-bottom-row"><span class="myorder-total">RM${parseFloat(o.total).toFixed(2)}</span><button class="myorder-view-btn" onclick="event.stopPropagation();showReceipt(myOrders.find(x=>x.orderId===${o.orderId}))">View Receipt</button></div></div></div>`;
+        }).join('');
+    }
+
+    // RECEIPT
+    function showReceipt(order){
+        if(!order)return;
+        currentReceiptOrder=order;
+        const d=new Date(order.date);const st=order.status||'pending';
+        const statusClass={pending:'pending',preparing:'preparing',completed:'completed',cancelled:'cancelled'}[st]||'pending';
+        const statusIcon={pending:'⏳',preparing:'👨‍🍳',completed:'✅',cancelled:'❌'}[st]||'⏳';
+        const statusText={pending:'Pending',preparing:'Preparing...',completed:'Ready for Pickup!',cancelled:'Cancelled'}[st]||st;
+        const logoHtml=siteSettings.logo_url?`<img src="${siteSettings.logo_url}" alt="Logo">`:'🧊';
+        const itemsHtml=order.items.map(i=>{
+            const imgHtml=i.image_url?`<img src="${i.image_url}" alt="${i.name}">`:(i.emoji||'🧊');
+            return`<div class="receipt-item"><div class="receipt-item-img">${imgHtml}</div><div class="receipt-item-details"><div class="receipt-item-name">${i.name}</div><div class="receipt-item-qty">× ${i.quantity} @ RM${parseFloat(i.price).toFixed(2)}</div></div><div class="receipt-item-price">RM${(i.price*i.quantity).toFixed(2)}</div></div>`;
+        }).join('');
+        const subtotal=order.items.reduce((s,i)=>s+i.price*i.quantity,0);
+        document.getElementById('receiptContent').innerHTML=`<div class="receipt-header"><div class="receipt-logo">${logoHtml}</div><h2>${siteSettings.site_name||'Jigarthanda Cafe'}</h2><p>Thank you for your order!</p><div class="receipt-status ${statusClass}">${statusIcon} ${statusText}</div></div><div class="receipt-body"><div class="receipt-info"><div class="receipt-info-item"><div class="receipt-info-label">Order ID</div><div class="receipt-info-value">#${order.orderId}</div></div><div class="receipt-info-item"><div class="receipt-info-label">Date</div><div class="receipt-info-value">${d.toLocaleDateString()}</div></div><div class="receipt-info-item"><div class="receipt-info-label">Time</div><div class="receipt-info-value">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div><div class="receipt-info-item"><div class="receipt-info-label">Customer</div><div class="receipt-info-value">${order.name}</div></div></div><div class="receipt-items-title">Order Items</div>${itemsHtml}<div class="receipt-total-section"><div class="receipt-total-row"><span>Subtotal</span><span>RM${subtotal.toFixed(2)}</span></div><div class="receipt-total-row grand-total"><span>Total</span><span>RM${parseFloat(order.total).toFixed(2)}</span></div></div><div class="receipt-payment-info"><div class="receipt-payment-method">Payment: <strong>${order.paymentMethod==='cash'?'💵 Cash at Counter':'📱 Online'}</strong></div></div></div><div class="receipt-footer"><p>Show this receipt when collecting</p><p class="thank-you">Thank you! Visit again! 🧊</p></div>`;
+        document.getElementById('receiptOverlay').classList.add('open');
+    }
+
+    function closeReceipt(){document.getElementById('receiptOverlay').classList.remove('open');currentReceiptOrder=null}
+    function downloadReceipt(){
+        if(!currentReceiptOrder)return;
+        const element=document.getElementById('receiptContent');
+        const opt={margin:0.5,filename:'receipt-'+currentReceiptOrder.orderId+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{unit:'in',format:'letter',orientation:'portrait'}};
+        html2pdf().set(opt).from(element).save();
+        showToast('Receipt downloaded!','📥');
+    }
+
+    // LOGIN & ADMIN
+    function openLogin(){document.getElementById('loginOverlay').classList.add('open');document.getElementById('loginUsername').value='';document.getElementById('loginPassword').value='';document.getElementById('loginError').classList.remove('show')}
+    function closeLogin(){document.getElementById('loginOverlay').classList.remove('open')}
+    async function handleLogin(e){e.preventDefault();const u=document.getElementById('loginUsername').value.trim(),p=document.getElementById('loginPassword').value.trim(),btn=document.getElementById('loginBtn'),err=document.getElementById('loginError');err.classList.remove('show');btn.disabled=true;btn.textContent='...';try{const{data,error}=await db.from('admin_users').select('*').eq('username',u).eq('password',p).single();if(error||!data){err.classList.add('show');return}closeLogin();openAdmin();showToast('Welcome!','👋')}catch(ex){err.textContent=ex.message;err.classList.add('show')}finally{btn.disabled=false;btn.textContent='Login →'}}
+    function openAdmin(){document.getElementById('adminOverlay').classList.add('open');document.body.style.overflow='hidden';loadOrders();loadAdminReviews();loadMenuItems();loadSettingsUI()}
+    function closeAdmin(){document.getElementById('adminOverlay').classList.remove('open');document.body.style.overflow=''}
+    function switchAdminTab(tab,btn){document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.admin-tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('adminTab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');if(tab==='reviews')loadAdminReviews();if(tab==='menu')loadMenuItems();if(tab==='settings')loadSettingsUI()}
+
+    // SETTINGS
+    function loadSettingsUI(){
+        const logoUrl=siteSettings.logo_url;
+        const siteName=siteSettings.site_name||'';
+        if(logoUrl){
+            document.getElementById('logoPreview').innerHTML=`<img src="${logoUrl}" alt="Logo">`;
+            document.getElementById('logoPreview').classList.add('has-image');
+            document.getElementById('logoUrlInput').value=logoUrl;
+        }
+        document.getElementById('siteNameInput').value=siteName;
+    }
+
+    async function handleLogoUpload(input){
+        if(!input.files||!input.files[0])return;
+        const file=input.files[0];
+        const progress=document.getElementById('logoUploadProgress');
+        progress.textContent='Uploading...';
+        try{
+            const fileName='logo_'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9.]/g,'_');
+            const{data,error}=await db.storage.from('images').upload(fileName,file,{cacheControl:'3600',upsert:false});
+            if(error)throw error;
+            const{data:urlData}=db.storage.from('images').getPublicUrl(fileName);
+            const publicUrl=urlData.publicUrl;
+            document.getElementById('logoUrlInput').value=publicUrl;
+            document.getElementById('logoPreview').innerHTML=`<img src="${publicUrl}" alt="Logo">`;
+            document.getElementById('logoPreview').classList.add('has-image');
+            progress.textContent='✅ Uploaded!';
+        }catch(e){
+            progress.textContent='❌ Error: '+e.message;
+        }
+    }
+
+    async function saveLogo(){
+        const url=document.getElementById('logoUrlInput').value.trim();
+        try{
+            await db.from('site_settings').upsert({setting_key:'logo_url',setting_value:url,updated_at:new Date().toISOString()},{onConflict:'setting_key'});
+            siteSettings.logo_url=url;
+            applySiteSettings();
+            showToast('Logo saved!','✅');
+        }catch(e){showToast('Error: '+e.message,'❌')}
+    }
+
+    async function saveSiteName(){
+        const name=document.getElementById('siteNameInput').value.trim();
+        if(!name){showToast('Enter a name','⚠️');return}
+        try{
+            await db.from('site_settings').upsert({setting_key:'site_name',setting_value:name,updated_at:new Date().toISOString()},{onConflict:'setting_key'});
+            siteSettings.site_name=name;
+            applySiteSettings();
+            showToast('Name saved!','✅');
+        }catch(e){showToast('Error: '+e.message,'❌')}
+    }
+
+    // ORDERS
+    async function loadOrders(){
+        const tb=document.getElementById('ordersTableBody');
+        tb.innerHTML='<tr><td colspan="6" class="no-orders">Loading...</td></tr>';
+        try{
+            const{data,error}=await db.from('orders').select('*').order('created_at',{ascending:false});
+            if(error)throw error;
+            allOrders=data||[];
+            renderOrders(allOrders);
+            updateOrderStats();
+        }catch(e){tb.innerHTML='<tr><td colspan="6" class="no-orders">'+e.message+'</td></tr>'}
+    }
+
+    function updateOrderStats(){
+        document.getElementById('totalOrders').textContent=allOrders.length;
+        document.getElementById('totalRevenue').textContent='RM'+allOrders.reduce((s,x)=>s+parseFloat(x.total_amount||0),0).toFixed(2);
+        document.getElementById('pendingOrders').textContent=allOrders.filter(x=>x.status==='pending').length;
+        document.getElementById('completedOrders').textContent=allOrders.filter(x=>x.status==='completed').length;
+    }
+
+    function renderOrders(orders){
+        const tb=document.getElementById('ordersTableBody');
+        if(!orders||!orders.length){tb.innerHTML='<tr><td colspan="6" class="no-orders">No orders</td></tr>';return}
+        tb.innerHTML=orders.map(o=>{
+            const d=new Date(o.created_at);
+            const bg={pending:'#fff3e0',preparing:'#e3f2fd',completed:'#e8f5e9',cancelled:'#fce4ec'}[o.status]||'white';
+            return`<tr><td class="order-id-cell">#${o.id}</td><td>${o.customer_name||'N/A'}</td><td class="amount-cell">RM${parseFloat(o.total_amount).toFixed(2)}</td><td><select class="status-select" onchange="updateStatus(${o.id},this.value)" style="background:${bg}"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ Pending</option><option value="preparing" ${o.status==='preparing'?'selected':''}>👨‍🍳 Preparing</option><option value="completed" ${o.status==='completed'?'selected':''}>✅ Done</option><option value="cancelled" ${o.status==='cancelled'?'selected':''}>❌ Cancel</option></select></td><td class="date-cell">${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td><td><button class="view-btn" onclick="viewAdminOrder(${o.id})">Receipt</button></td></tr>`;
+        }).join('');
+    }
+
+    function filterOrders(s,btn){currentStatusFilter=s;document.querySelectorAll('#adminTabOrders .admin-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');let list=s==='all'?allOrders:allOrders.filter(o=>o.status===s);renderOrders(list)}
+
+    async function updateStatus(id,status){
+        try{
+            await db.from('orders').update({status}).eq('id',id);
+            const o=allOrders.find(x=>x.id===id);
+            if(o)o.status=status;
+            updateOrderStats();
+            renderOrders(currentStatusFilter==='all'?allOrders:allOrders.filter(o=>o.status===currentStatusFilter));
+            showToast('#'+id+' → '+status,'✅');
+        }catch(e){showToast(e.message,'❌');loadOrders()}
+    }
+
+    async function viewAdminOrder(id){
+        try{
+            const{data:order}=await db.from('orders').select('*').eq('id',id).single();
+            const{data:items}=await db.from('order_items').select('*').eq('order_id',id);
+            const receiptOrder={orderId:order.id,name:order.customer_name,items:(items||[]).map(i=>({id:i.drink_id,name:i.drink_name,quantity:i.quantity,price:i.unit_price,emoji:'🧊'})),total:order.total_amount,date:order.created_at,paymentMethod:order.payment_method,status:order.status};
+            showReceipt(receiptOrder);
+        }catch(e){showToast(e.message,'❌')}
+    }
+
+
+    // ADMIN REVIEWS
+    async function loadAdminReviews(){
+        const grid=document.getElementById('adminReviewsGrid');
+        grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">Loading...</p>';
+        try{
+            let query=db.from('reviews').select('*').order('created_at',{ascending:false});
+            if(currentReviewFilter!=='all')query=query.eq('status',currentReviewFilter);
+            const{data,error}=await query;
+            if(error)throw error;
+            if(!data||!data.length){
+                grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">No reviews found</p>';
+                return;
+            }
+            grid.innerHTML=data.map(r=>{
+                const stars=Array(5).fill(0).map((_,i)=>`<span>${i<r.rating?'★':'☆'}</span>`).join('');
+                const d=new Date(r.created_at);
+                return`<div class="review-admin-card ${r.status}">
+                    <div class="review-admin-content">
+                        <div class="review-admin-header">
+                            <span class="review-admin-name">${r.customer_name||'Customer'}</span>
+                            <div class="review-admin-stars">${stars}</div>
+                        </div>
+                        <p class="review-admin-text">${r.review_text||'No comment'}</p>
+                        <p class="review-admin-date">${d.toLocaleDateString()} - Order #${r.order_id||'N/A'}</p>
+                    </div>
+                    <div class="review-admin-actions">
+                        ${r.status==='pending'?`
+                            <button class="approve-btn" onclick="approveReview(${r.id})">✓ Approve</button>
+                            <button class="reject-btn" onclick="rejectReview(${r.id})">✕ Reject</button>
+                        `:`<span style="font-size:10px;color:#b2bec3;text-transform:uppercase">${r.status}</span>`}
+                    </div>
+                </div>`;
+            }).join('');
+        }catch(e){
+            grid.innerHTML='<p style="color:#e17055;padding:20px">Error: '+e.message+'</p>';
+        }
+    }
+
+    function filterAdminReviews(status,btn){
+        currentReviewFilter=status;
+        document.querySelectorAll('#adminTabReviews .admin-filter-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        loadAdminReviews();
+    }
+
+    async function approveReview(id){
+        try{
+            await db.from('reviews').update({status:'approved'}).eq('id',id);
+            showToast('Review approved!','✅');
+            loadAdminReviews();
+            loadApprovedReviews();
+        }catch(e){showToast(e.message,'❌')}
+    }
+
+    async function rejectReview(id){
+        try{
+            await db.from('reviews').update({status:'rejected'}).eq('id',id);
+            showToast('Review rejected','🗑️');
+            loadAdminReviews();
+        }catch(e){showToast(e.message,'❌')}
+    }
+
+    // MENU MANAGEMENT
+    async function loadMenuItems(){
+        const grid=document.getElementById('menuItemsGrid');
+        grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">Loading...</p>';
+        try{
+            const{data,error}=await db.from('drinks').select('*,categories(*)').order('display_order');
+            if(error)throw error;
+            if(!data||!data.length){
+                grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">No items found</p>';
+                return;
+            }
+            grid.innerHTML=data.map(d=>{
+                const imgContent=d.image_url?`<img src="${d.image_url}" alt="${d.name}">`:(d.emoji||'🧊');
+                return`<div class="menu-item-card">
+                    <div class="menu-item-img">${imgContent}</div>
+                    <div class="menu-item-info">
+                        <div class="mi-cat">${d.categories?d.categories.name:''}</div>
+                        <h4>${d.name}</h4>
+                        <div class="mi-price">RM${parseFloat(d.price).toFixed(2)}</div>
+                    </div>
+                    <div class="menu-item-actions">
+                        <button class="mi-edit-btn" onclick="editItem(${d.id})">Edit</button>
+                        <button class="mi-delete-btn" onclick="deleteItem(${d.id},'${d.name.replace(/'/g,"\\'")}')">Del</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }catch(e){
+            grid.innerHTML='<p style="color:#e17055;padding:20px">Error: '+e.message+'</p>';
+        }
+    }
+
+    function openItemForm(item){
+        document.getElementById('itemFormTitle').textContent=item?'Edit Item':'Add Item';
+        document.getElementById('itemId').value=item?item.id:'';
+        document.getElementById('itemName').value=item?item.name:'';
+        document.getElementById('itemEmoji').value=item?item.emoji||'':'';
+        document.getElementById('itemDesc').value=item?item.description||'':'';
+        document.getElementById('itemPrice').value=item?item.price:'';
+        document.getElementById('itemBadge').value=item?item.badge||'':'';
+        document.getElementById('itemOrder').value=item?item.display_order||0:0;
+        document.getElementById('itemImageUrl').value=item?item.image_url||'':'';
+        
+        // Set image preview
+        const preview=document.getElementById('itemImagePreview');
+        if(item&&item.image_url){
+            preview.innerHTML=`<img src="${item.image_url}" alt="Preview"><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
+        }else{
+            preview.innerHTML=`<div class="upload-placeholder"><span>📷</span><p>Click to upload image</p></div><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
+        }
+        
+        const catSel=document.getElementById('itemCategory');
+        catSel.innerHTML=allCategories.map(c=>'<option value="'+c.id+'"'+(item&&item.category_id===c.id?' selected':'')+'>'+c.name+'</option>').join('');
+        document.getElementById('itemFormOverlay').classList.add('open');
+    }
+
+    function closeItemForm(){
+        document.getElementById('itemFormOverlay').classList.remove('open');
+    }
+
+    async function handleItemImageUpload(input){
+        if(!input.files||!input.files[0])return;
+        const file=input.files[0];
+        const preview=document.getElementById('itemImagePreview');
+        
+        // Show loading state
+        preview.innerHTML=`<div class="upload-placeholder"><span>⏳</span><p>Uploading...</p></div><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
+        
+        try{
+            const fileName='item_'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9.]/g,'_');
+            const{data,error}=await db.storage.from('images').upload(fileName,file,{cacheControl:'3600',upsert:false});
+            if(error)throw error;
+            
+            const{data:urlData}=db.storage.from('images').getPublicUrl(fileName);
+            const publicUrl=urlData.publicUrl;
+            
+            document.getElementById('itemImageUrl').value=publicUrl;
+            preview.innerHTML=`<img src="${publicUrl}" alt="Preview"><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
+            showToast('Image uploaded!','✅');
+        }catch(e){
+            preview.innerHTML=`<div class="upload-placeholder"><span>❌</span><p>Upload failed</p></div><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
+            showToast('Upload error: '+e.message,'❌');
+        }
+    }
+
+    async function editItem(id){
+        try{
+            const{data,error}=await db.from('drinks').select('*').eq('id',id).single();
+            if(error)throw error;
+            openItemForm(data);
+        }catch(e){
+            showToast(e.message,'❌');
+        }
+    }
+
+    async function saveItem(e){
+        e.preventDefault();
+        const btn=document.getElementById('itemSaveBtn');
+        btn.disabled=true;
+        btn.textContent='Saving...';
+        
+        const id=document.getElementById('itemId').value;
+        const item={
+            name:document.getElementById('itemName').value.trim(),
+            emoji:document.getElementById('itemEmoji').value.trim()||'🧊',
+            description:document.getElementById('itemDesc').value.trim(),
+            price:parseFloat(document.getElementById('itemPrice').value),
+            category_id:document.getElementById('itemCategory').value,
+            badge:document.getElementById('itemBadge').value.trim()||null,
+            display_order:parseInt(document.getElementById('itemOrder').value)||0,
+            image_url:document.getElementById('itemImageUrl').value.trim()||null,
+            is_available:true
+        };
+        
+        try{
+            if(id){
+                await db.from('drinks').update(item).eq('id',id);
+                showToast('Item updated!','✅');
+            }else{
+                await db.from('drinks').insert(item);
+                showToast('Item added!','✅');
+            }
+            closeItemForm();
+            
+            // Refresh drinks
+            const{data}=await db.from('drinks').select('*,categories(*)').eq('is_available',true).order('display_order');
+            allDrinks=data||[];
+            renderDrinks(allDrinks);
+            loadMenuItems();
+        }catch(err){
+            showToast(err.message,'❌');
+        }finally{
+            btn.disabled=false;
+            btn.textContent='Save Item';
+        }
+    }
+
+    async function deleteItem(id,name){
+        if(!confirm('Delete "'+name+'"?'))return;
+        try{
+            await db.from('drinks').delete().eq('id',id);
+            showToast(name+' deleted','🗑️');
+            
+            const{data}=await db.from('drinks').select('*,categories(*)').eq('is_available',true).order('display_order');
+            allDrinks=data||[];
+            renderDrinks(allDrinks);
+            loadMenuItems();
+        }catch(e){
+            showToast(e.message,'❌');
+        }
+    }
+
+    // Initialize
+    updateCartUI();
+    initApp();
+    </script>
 </body>
 </html>
