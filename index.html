@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +6,7 @@ html
     <title>Jigarthanda Cafe</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Poppins',sans-serif;background:#fafbfe;color:#333;line-height:1.6;overflow-x:hidden}
@@ -30,6 +30,7 @@ html
         @keyframes mobileMenuSlide{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
         @keyframes starPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
         @keyframes liveGlow{0%,100%{box-shadow:0 0 5px rgba(0,184,148,0.5)}50%{box-shadow:0 0 20px rgba(0,184,148,0.8)}}
+        @keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
         .loading-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#fff5f0,#fff0e6,#ffe8d6);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.8s,visibility 0.8s}
         .loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -100,7 +101,6 @@ html
         .hero-stats{display:flex;justify-content:center;gap:40px;margin-top:45px;animation:fadeInUp 0.8s ease 1s both}
         .hero-stat h3{font-size:24px;font-weight:800;color:#ff6b35}.hero-stat p{font-size:11px;color:#999;font-weight:500;margin-top:2px}
 
-        /* REVIEWS SECTION */
         .reviews-section{max-width:1280px;margin:0 auto 60px;padding:0 16px}
         .reviews-header{text-align:center;margin-bottom:30px}
         .reviews-header .section-tag{display:inline-block;background:linear-gradient(135deg,rgba(255,107,53,0.1),rgba(247,147,30,0.1));color:#ff6b35;padding:6px 18px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
@@ -214,7 +214,6 @@ html
         .pay-confirm-btn:hover{transform:translateY(-2px)}.pay-confirm-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
         .pay-cancel-btn{background:#f5f6fa;color:#636e72;flex:0.4}
 
-        /* REVIEW MODAL */
         .review-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);z-index:5000;align-items:center;justify-content:center;padding:12px}
         .review-overlay.open{display:flex}
         .review-modal{background:white;border-radius:24px;max-width:450px;width:100%;animation:popIn 0.4s ease;overflow:hidden}
@@ -263,7 +262,6 @@ html
         .myorder-view-btn{background:none;border:2px solid #ff6b35;color:#ff6b35;padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s}
         .myorder-view-btn:hover{background:#ff6b35;color:white}
 
-        /* RECEIPT */
         .receipt-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);z-index:5500;align-items:center;justify-content:center;padding:12px}
         .receipt-overlay.open{display:flex}
         .receipt-modal{background:white;border-radius:24px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;animation:popIn 0.4s ease}
@@ -346,6 +344,100 @@ html
         .admin-tab.active{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border-color:transparent}
         .admin-tab-content{display:none}.admin-tab-content.active{display:block}
 
+        /* DASHBOARD STYLES */
+        .dashboard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+        .dashboard-card{background:white;border-radius:20px;padding:20px;border:1px solid rgba(0,0,0,0.03);position:relative;overflow:hidden}
+        .dashboard-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;opacity:0.1}
+        .dashboard-card.sales::before{background:#00b894}
+        .dashboard-card.orders::before{background:#0984e3}
+        .dashboard-card.profit::before{background:#6c5ce7}
+        .dashboard-card.customers::before{background:#fdcb6e}
+        .dashboard-card-icon{font-size:32px;margin-bottom:8px}
+        .dashboard-card-value{font-size:28px;font-weight:900;color:#2d3436;animation:countUp 0.5s ease}
+        .dashboard-card-label{font-size:11px;color:#b2bec3;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+        .dashboard-card-trend{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;margin-top:8px;padding:4px 8px;border-radius:6px;width:fit-content}
+        .dashboard-card-trend.up{background:#e8f5e9;color:#2e7d32}
+        .dashboard-card-trend.down{background:#ffebee;color:#c62828}
+
+        .dashboard-row{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:24px}
+        .dashboard-section{background:white;border-radius:20px;padding:20px;border:1px solid rgba(0,0,0,0.03)}
+        .dashboard-section h3{font-size:14px;font-weight:800;color:#2d3436;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .chart-container{position:relative;height:250px}
+
+        .top-drinks-list{display:flex;flex-direction:column;gap:10px}
+        .top-drink-item{display:flex;align-items:center;gap:12px;padding:12px;background:#fafbfe;border-radius:12px;transition:all 0.3s}
+        .top-drink-item:hover{background:#fff5f0}
+        .top-drink-rank{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white}
+        .top-drink-rank.gold{background:linear-gradient(135deg,#f39c12,#e67e22)}
+        .top-drink-rank.silver{background:linear-gradient(135deg,#b2bec3,#636e72)}
+        .top-drink-rank.bronze{background:linear-gradient(135deg,#e17055,#d63031)}
+        .top-drink-info{flex:1}
+        .top-drink-name{font-size:13px;font-weight:700;color:#2d3436}
+        .top-drink-stats{font-size:11px;color:#b2bec3}
+        .top-drink-sales{font-size:14px;font-weight:800;color:#ff6b35}
+
+        .alerts-list{display:flex;flex-direction:column;gap:8px}
+        .alert-item{display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;font-size:12px;font-weight:600}
+        .alert-item.warning{background:#fff3e0;color:#e65100}
+        .alert-item.danger{background:#ffebee;color:#c62828}
+        .alert-item.success{background:#e8f5e9;color:#2e7d32}
+        .alert-icon{font-size:18px}
+
+        .returning-customers{text-align:center;padding:20px}
+        .returning-percentage{font-size:48px;font-weight:900;background:linear-gradient(135deg,#ff6b35,#f7931e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .returning-label{font-size:12px;color:#b2bec3;margin-top:4px}
+
+        /* EXPENSE STYLES */
+        .expense-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+        .expense-card{background:white;border-radius:16px;padding:18px;text-align:center;border:1px solid rgba(0,0,0,0.03)}
+        .expense-card-icon{font-size:28px;margin-bottom:6px}
+        .expense-card-value{font-size:22px;font-weight:900;color:#2d3436}
+        .expense-card-label{font-size:10px;color:#b2bec3;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+        .expense-card.profit .expense-card-value{color:#00b894}
+        .expense-card.loss .expense-card-value{color:#e74c3c}
+
+        .expense-toggle{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+        .expense-toggle-btn{padding:10px 20px;border:2px solid #e9ecef;background:white;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s}
+        .expense-toggle-btn.active{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border-color:transparent}
+
+        .expense-sections{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .expense-section{background:white;border-radius:20px;padding:20px;border:1px solid rgba(0,0,0,0.03)}
+        .expense-section h3{font-size:14px;font-weight:800;color:#2d3436;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+        .manual-expense-form{display:flex;gap:10px;margin-bottom:16px}
+        .manual-expense-form input{flex:1;padding:12px 14px;border:2px solid #f0f2f5;border-radius:12px;font-size:13px;font-family:'Poppins',sans-serif}
+        .manual-expense-form input:focus{outline:none;border-color:#ff6b35}
+        .manual-expense-form button{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+
+        .expense-list{max-height:300px;overflow-y:auto}
+        .expense-item{display:flex;align-items:center;gap:12px;padding:12px;background:#fafbfe;border-radius:12px;margin-bottom:8px}
+        .expense-item-info{flex:1}
+        .expense-item-name{font-size:13px;font-weight:600;color:#2d3436}
+        .expense-item-date{font-size:10px;color:#b2bec3}
+        .expense-item-amount{font-size:14px;font-weight:800;color:#e74c3c}
+        .expense-item-delete{background:none;border:none;color:#dfe6e9;font-size:14px;cursor:pointer;padding:4px}
+        .expense-item-delete:hover{color:#e74c3c}
+
+        .expense-total-row{display:flex;justify-content:space-between;padding:14px;background:linear-gradient(135deg,#fff5f0,#ffe8d6);border-radius:12px;margin-top:12px;font-weight:700}
+        .expense-total-label{color:#636e72}
+        .expense-total-amount{color:#ff6b35;font-size:18px}
+
+        .auto-expense-list{max-height:350px;overflow-y:auto}
+        .auto-expense-item{display:flex;align-items:center;gap:12px;padding:12px;background:#fafbfe;border-radius:12px;margin-bottom:8px}
+        .auto-expense-drink{flex:1}
+        .auto-expense-name{font-size:13px;font-weight:600;color:#2d3436}
+        .auto-expense-calc{font-size:10px;color:#b2bec3}
+        .auto-expense-total{font-size:14px;font-weight:800;color:#0984e3}
+
+        .drink-cost-editor{margin-top:16px;padding-top:16px;border-top:2px dashed #e9ecef}
+        .drink-cost-editor h4{font-size:12px;font-weight:700;color:#636e72;margin-bottom:12px}
+        .cost-edit-list{max-height:200px;overflow-y:auto}
+        .cost-edit-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fafbfe;border-radius:10px;margin-bottom:6px}
+        .cost-edit-item span{flex:1;font-size:12px;font-weight:600;color:#2d3436}
+        .cost-edit-item input{width:80px;padding:6px 10px;border:2px solid #f0f2f5;border-radius:8px;font-size:12px;font-family:'Poppins',sans-serif;text-align:right}
+        .cost-edit-item input:focus{outline:none;border-color:#ff6b35}
+        .save-costs-btn{width:100%;margin-top:12px;background:linear-gradient(135deg,#00b894,#00cec9);color:white;border:none;padding:12px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+
         .admin-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
         .admin-stat-card{background:white;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;border:1px solid rgba(0,0,0,0.03)}
         .admin-stat-icon{font-size:24px;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -369,7 +461,6 @@ html
         .view-btn:hover{background:#ff6b35;color:white}
         .no-orders{text-align:center;padding:50px;color:#dfe6e9}
 
-        /* ADMIN REVIEWS */
         .reviews-admin-grid{display:grid;gap:12px}
         .review-admin-card{background:white;border-radius:16px;padding:16px;border:1px solid #f0f2f5;display:flex;gap:14px;align-items:flex-start}
         .review-admin-card.pending{border-left:4px solid #f39c12}
@@ -386,7 +477,6 @@ html
         .approve-btn{background:#e8f5e9;color:#2e7d32}.approve-btn:hover{background:#2e7d32;color:white}
         .reject-btn{background:#fce4ec;color:#c62828}.reject-btn:hover{background:#c62828;color:white}
 
-        /* SETTINGS TAB */
         .settings-section{background:white;border-radius:20px;padding:24px;margin-bottom:20px;border:1px solid rgba(0,0,0,0.03)}
         .settings-section h3{font-size:16px;font-weight:800;color:#2d3436;margin-bottom:20px;display:flex;align-items:center;gap:10px}
         .settings-row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
@@ -420,6 +510,7 @@ html
         .menu-item-info h4{font-size:14px;font-weight:700;color:#2d3436;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .menu-item-info .mi-cat{font-size:10px;color:#b2bec3;font-weight:600;text-transform:uppercase;letter-spacing:1px}
         .menu-item-info .mi-price{font-size:16px;font-weight:800;color:#ff6b35;margin-top:2px}
+        .menu-item-info .mi-cost{font-size:10px;color:#b2bec3}
         .menu-item-actions{display:flex;gap:6px;flex-shrink:0}
         .mi-edit-btn,.mi-delete-btn{border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;font-family:'Poppins',sans-serif;transition:all 0.3s}
         .mi-edit-btn{background:#e8f4fd;color:#0984e3}.mi-edit-btn:hover{background:#0984e3;color:white}
@@ -453,6 +544,7 @@ html
         .scroll-top-btn.visible{opacity:1;visibility:visible}
 
         @media(min-width:769px){.mobile-menu-btn{display:none!important}.mobile-cart-floating{display:none!important}.myorders-overlay.open{align-items:center;padding:20px}.myorders-modal{border-radius:24px;max-height:85vh}}
+        @media(max-width:1200px){.dashboard-grid{grid-template-columns:repeat(2,1fr)}.dashboard-row{grid-template-columns:1fr}.expense-summary{grid-template-columns:repeat(3,1fr)}.expense-sections{grid-template-columns:1fr}}
         @media(max-width:768px){
             .nav-links,.my-orders-btn,.admin-link,.cart-btn{display:none!important}
             .mobile-menu-btn{display:flex!important}
@@ -463,9 +555,11 @@ html
             .admin-stats{grid-template-columns:repeat(2,1fr)}.menu-items-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}
             .reviews-grid{grid-template-columns:1fr}
             .settings-row{flex-direction:column}
+            .dashboard-grid{grid-template-columns:1fr}.dashboard-card-value{font-size:22px}
+            .expense-summary{grid-template-columns:repeat(2,1fr)}.expense-sections{grid-template-columns:1fr}
             footer{padding-bottom:70px}
         }
-        @media(max-width:380px){.drinks-grid{grid-template-columns:1fr}.hero h1{font-size:24px}.hero-stats{flex-wrap:wrap;gap:16px}.admin-stats{grid-template-columns:1fr}}
+        @media(max-width:380px){.drinks-grid{grid-template-columns:1fr}.hero h1{font-size:24px}.hero-stats{flex-wrap:wrap;gap:16px}.admin-stats{grid-template-columns:1fr}.expense-summary{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -509,7 +603,7 @@ html
         <div class="hero-badge"><span class="hero-badge-dot"></span> Now Open — Freshly Crafted</div>
         <div id="heroLogo" class="hero-emoji">🧊</div>
         <h1>Welcome to<br><span class="highlight" id="heroSiteName">Jigarthanda Cafe</span></h1>
-        <p>Penang’s Famous Jigarthanda Dawood Restaurant – Established 2000</p>
+        <p>Penang's Famous Jigarthanda Dawood Restaurant – Established 2000</p>
         <div class="hero-btns"><button class="hero-btn hero-btn-primary" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">Explore Menu →</button><button class="hero-btn hero-btn-secondary" onclick="openMyOrders()">Track Order 📦</button></div>
         <div class="hero-stats"><div class="hero-stat"><h3 id="statDrinks"></h3><p></p></div><div class="hero-stat"><h3 id="statRating"></h3><p></p></div><div class="hero-stat"><h3 id="statCustomers"></h3><p></p></div></div>
     </div></section>
@@ -540,8 +634,8 @@ html
 
     <footer>
         <div class="footer-logo" id="footerLogo">🧊 jigarthanda<span>cafe</span></div>
-        <p class="footer-tagline">“Crafted to Perfection, Signature Experience in Every Sip”</p>
-        <p class="copyright">© 2026 Jigarthanda Cafe - Penang’s Famous Jigarthanda Dawood Restaurant – Established 2000</p>
+        <p class="footer-tagline">"Crafted to Perfection, Signature Experience in Every Sip"</p>
+        <p class="copyright">© 2026 Jigarthanda Cafe - Penang's Famous Jigarthanda Dawood Restaurant – Established 2000</p>
     </footer>
     <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
@@ -587,13 +681,74 @@ html
         </div>
         <div class="admin-body">
             <div class="admin-tabs">
-                <button class="admin-tab active" onclick="switchAdminTab('orders',this)">📋 Orders</button>
+                <button class="admin-tab active" onclick="switchAdminTab('dashboard',this)">📊 Dashboard</button>
+                <button class="admin-tab" onclick="switchAdminTab('orders',this)">📋 Orders</button>
+                <button class="admin-tab" onclick="switchAdminTab('expenses',this)">💸 Expenses</button>
                 <button class="admin-tab" onclick="switchAdminTab('reviews',this)">⭐ Reviews</button>
                 <button class="admin-tab" onclick="switchAdminTab('menu',this)">🍹 Menu</button>
                 <button class="admin-tab" onclick="switchAdminTab('settings',this)">⚙️ Settings</button>
             </div>
 
-            <div class="admin-tab-content active" id="adminTabOrders">
+            <!-- DASHBOARD TAB -->
+            <div class="admin-tab-content active" id="adminTabDashboard">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card sales">
+                        <div class="dashboard-card-icon">💰</div>
+                        <div class="dashboard-card-value" id="dashTodaySales">RM 0</div>
+                        <div class="dashboard-card-label">Today's Sales</div>
+                        <div class="dashboard-card-trend up" id="dashSalesTrend">↑ 0%</div>
+                    </div>
+                    <div class="dashboard-card orders">
+                        <div class="dashboard-card-icon">📦</div>
+                        <div class="dashboard-card-value" id="dashTodayOrders">0</div>
+                        <div class="dashboard-card-label">Today's Orders</div>
+                        <div class="dashboard-card-trend up" id="dashOrdersTrend">↑ 0%</div>
+                    </div>
+                    <div class="dashboard-card profit">
+                        <div class="dashboard-card-icon">📈</div>
+                        <div class="dashboard-card-value" id="dashNetProfit">RM 0</div>
+                        <div class="dashboard-card-label">Net Profit (Today)</div>
+                    </div>
+                    <div class="dashboard-card customers">
+                        <div class="dashboard-card-icon">👥</div>
+                        <div class="dashboard-card-value" id="dashReturning">0%</div>
+                        <div class="dashboard-card-label">Returning Customers</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-row">
+                    <div class="dashboard-section">
+                        <h3>📊 Peak Hours Today</h3>
+                        <div class="chart-container">
+                            <canvas id="peakHoursChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="dashboard-section">
+                        <h3>🏆 Best Selling Drinks</h3>
+                        <div class="top-drinks-list" id="topDrinksList">
+                            <p style="color:#b2bec3;text-align:center;padding:20px">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-row">
+                    <div class="dashboard-section">
+                        <h3>💎 Most Profitable Drinks</h3>
+                        <div class="top-drinks-list" id="profitableDrinksList">
+                            <p style="color:#b2bec3;text-align:center;padding:20px">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-section">
+                        <h3>🚨 Alerts & Insights</h3>
+                        <div class="alerts-list" id="alertsList">
+                            <p style="color:#b2bec3;text-align:center;padding:20px">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDERS TAB -->
+            <div class="admin-tab-content" id="adminTabOrders">
                 <div class="admin-stats">
                     <div class="admin-stat-card"><div class="admin-stat-icon orders">📦</div><div class="admin-stat-info"><h3 id="totalOrders">0</h3><p>Orders</p></div></div>
                     <div class="admin-stat-card"><div class="admin-stat-icon revenue">💰</div><div class="admin-stat-info"><h3 id="totalRevenue">RM0</h3><p>Revenue</p></div></div>
@@ -604,16 +759,93 @@ html
                 <div class="orders-table-wrapper"><table class="orders-table"><thead><tr><th>ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody id="ordersTableBody"><tr><td colspan="6" class="no-orders">Loading...</td></tr></tbody></table></div>
             </div>
 
+            <!-- EXPENSES TAB -->
+            <div class="admin-tab-content" id="adminTabExpenses">
+                <div class="expense-summary">
+                    <div class="expense-card">
+                        <div class="expense-card-icon">💰</div>
+                        <div class="expense-card-value" id="expTodaySales">RM 0</div>
+                        <div class="expense-card-label">Today Sales</div>
+                    </div>
+                    <div class="expense-card">
+                        <div class="expense-card-icon">📝</div>
+                        <div class="expense-card-value" id="expManualTotal">RM 0</div>
+                        <div class="expense-card-label">Manual Expense</div>
+                    </div>
+                    <div class="expense-card">
+                        <div class="expense-card-icon">🧮</div>
+                        <div class="expense-card-value" id="expAutoTotal">RM 0</div>
+                        <div class="expense-card-label">Auto Expense</div>
+                    </div>
+                    <div class="expense-card">
+                        <div class="expense-card-icon">📉</div>
+                        <div class="expense-card-value" id="expTotalExpense">RM 0</div>
+                        <div class="expense-card-label">Total Expense</div>
+                    </div>
+                    <div class="expense-card profit" id="expProfitCard">
+                        <div class="expense-card-icon">📈</div>
+                        <div class="expense-card-value" id="expNetProfit">RM 0</div>
+                        <div class="expense-card-label">Net Profit</div>
+                    </div>
+                </div>
+
+                <div class="expense-toggle">
+                    <button class="expense-toggle-btn active" onclick="setExpenseMode('both',this)">📊 Manual + Auto</button>
+                    <button class="expense-toggle-btn" onclick="setExpenseMode('manual',this)">📝 Manual Only</button>
+                    <button class="expense-toggle-btn" onclick="setExpenseMode('auto',this)">🧮 Auto Only</button>
+                </div>
+
+                <div class="expense-sections">
+                    <div class="expense-section" id="manualExpenseSection">
+                        <h3>📝 Manual Expenses</h3>
+                        <div class="manual-expense-form">
+                            <input type="text" id="expenseName" placeholder="Expense name (e.g., Milk Purchase)">
+                            <input type="number" id="expenseAmount" placeholder="Amount (RM)" step="0.01" min="0">
+                            <button onclick="addManualExpense()">+ Add</button>
+                        </div>
+                        <div class="expense-list" id="manualExpenseList">
+                            <p style="color:#b2bec3;text-align:center;padding:20px">No expenses added</p>
+                        </div>
+                        <div class="expense-total-row">
+                            <span class="expense-total-label">Manual Total:</span>
+                            <span class="expense-total-amount" id="manualExpenseTotalDisplay">RM 0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="expense-section" id="autoExpenseSection">
+                        <h3>🧮 Auto Expenses (Ingredient Cost)</h3>
+                        <div class="auto-expense-list" id="autoExpenseList">
+                            <p style="color:#b2bec3;text-align:center;padding:20px">Loading...</p>
+                        </div>
+                        <div class="expense-total-row">
+                            <span class="expense-total-label">Auto Total:</span>
+                            <span class="expense-total-amount" id="autoExpenseTotalDisplay">RM 0.00</span>
+                        </div>
+
+                        <div class="drink-cost-editor">
+                            <h4>⚙️ Set Cost Per Drink</h4>
+                            <div class="cost-edit-list" id="costEditList">
+                                <p style="color:#b2bec3;text-align:center;padding:20px">Loading...</p>
+                            </div>
+                            <button class="save-costs-btn" onclick="saveDrinkCosts()">💾 Save Costs</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVIEWS TAB -->
             <div class="admin-tab-content" id="adminTabReviews">
                 <div class="admin-toolbar"><h2>⭐ Customer Reviews</h2><div class="admin-toolbar-right"><button class="admin-filter-btn active" onclick="filterAdminReviews('pending',this)">Pending</button><button class="admin-filter-btn" onclick="filterAdminReviews('approved',this)">Approved</button><button class="admin-filter-btn" onclick="filterAdminReviews('all',this)">All</button></div></div>
                 <div class="reviews-admin-grid" id="adminReviewsGrid"><p style="color:#b2bec3;padding:40px;text-align:center">Loading...</p></div>
             </div>
 
+            <!-- MENU TAB -->
             <div class="admin-tab-content" id="adminTabMenu">
                 <div class="menu-mgmt-header"><h2>🍹 Menu Items</h2><button class="add-item-btn" onclick="openItemForm()">+ Add Item</button></div>
                 <div class="menu-items-grid" id="menuItemsGrid"><p style="color:#b2bec3;padding:40px;text-align:center">Loading...</p></div>
             </div>
 
+            <!-- SETTINGS TAB -->
             <div class="admin-tab-content" id="adminTabSettings">
                 <div class="settings-section">
                     <h3>🖼️ Logo Settings</h3>
@@ -680,12 +912,13 @@ html
                 <div class="form-group"><label>Description</label><textarea id="itemDesc"></textarea></div>
                 <div class="form-row">
                     <div class="form-group"><label>Price (RM)</label><input type="number" id="itemPrice" step="0.01" min="0" required></div>
-                    <div class="form-group"><label>Category</label><select id="itemCategory"></select></div>
+                    <div class="form-group"><label>Cost (RM)</label><input type="number" id="itemCost" step="0.01" min="0" placeholder="Ingredient cost per cup"></div>
                 </div>
                 <div class="form-row">
+                    <div class="form-group"><label>Category</label><select id="itemCategory"></select></div>
                     <div class="form-group"><label>Badge</label><input type="text" id="itemBadge" placeholder="Bestseller"></div>
-                    <div class="form-group"><label>Order</label><input type="number" id="itemOrder" min="0" value="0"></div>
                 </div>
+                <div class="form-group"><label>Order</label><input type="number" id="itemOrder" min="0" value="0"></div>
                 <div class="form-actions">
                     <button type="submit" class="form-save-btn" id="itemSaveBtn">Save Item</button>
                     <button type="button" class="form-cancel-btn" onclick="closeItemForm()">Cancel</button>
@@ -702,10 +935,10 @@ html
     <script>
     const SB_URL='https://lujvipglowanpauxwwgd.supabase.co';
     const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1anZpcGdsb3dhbnBhdXh3d2dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwODc4MDcsImV4cCI6MjA4NjY2MzgwN30.ZcKhM1Qs5V5cBClEuQclbACcEdem7nlGfMuSZjcMVaM';
-    let db,allDrinks=[],allCategories=[],cart=[],allOrders=[],myOrders=[],allReviews=[],siteSettings={};
-    let currentCategory='all',currentStatusFilter='all',currentReviewFilter='pending';
+    let db,allDrinks=[],allCategories=[],cart=[],allOrders=[],myOrders=[],allReviews=[],siteSettings={},manualExpenses=[];
+    let currentCategory='all',currentStatusFilter='all',currentReviewFilter='pending',expenseMode='both';
     let currentReceiptOrder=null,pendingReviewOrder=null,selectedRating=5;
-    let orderPollingInterval=null;
+    let orderPollingInterval=null,peakHoursChart=null;
 
     function createParticles(){const c=document.getElementById('heroParticles');['🧊','🥤','🍹','✨'].forEach((_,i)=>{const p=document.createElement('span');p.className='particle';p.textContent=['🧊','🥤','🍹','✨'][i%4];p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*8+'s';p.style.animationDuration=(6+Math.random()*6)+'s';c.appendChild(p)})}
     createParticles();
@@ -771,7 +1004,6 @@ html
         const logoUrl=siteSettings.logo_url;
         const siteName=siteSettings.site_name||'Jigarthanda Cafe';
         
-        // Update all logo instances
         if(logoUrl){
             document.getElementById('loadingLogo').innerHTML=`<img src="${logoUrl}" class="loading-logo" alt="Logo">`;
             document.getElementById('headerLogoIcon').innerHTML=`<img src="${logoUrl}" alt="Logo">`;
@@ -780,13 +1012,12 @@ html
             document.getElementById('footerLogo').innerHTML=`<img src="${logoUrl}" alt="Logo"> ${siteName}`;
         }
         
-        // Update site name
         document.getElementById('loadingSiteName').textContent=siteName;
         document.getElementById('heroSiteName').textContent=siteName;
         document.title=siteName;
     }
 
-    // ORDER POLLING (Every 3 seconds)
+    // ORDER POLLING
     function startOrderPolling(){
         if(orderPollingInterval)clearInterval(orderPollingInterval);
         orderPollingInterval=setInterval(async()=>{
@@ -900,7 +1131,7 @@ html
         if(!d)return;
         const ex=cart.find(i=>i.id===id);
         if(ex)ex.quantity++;
-        else cart.push({id:d.id,name:d.name,price:parseFloat(d.price),emoji:d.emoji||'🧊',image_url:d.image_url,quantity:1});
+        else cart.push({id:d.id,name:d.name,price:parseFloat(d.price),cost:parseFloat(d.cost_price||0),emoji:d.emoji||'🧊',image_url:d.image_url,quantity:1});
         updateCartUI();
         if(btn){btn.classList.add('added');btn.textContent='Added ✓';setTimeout(()=>{btn.classList.remove('added');btn.textContent='Add +'},1000)}
         showToast(d.name+' added!','🛒');
@@ -1026,9 +1257,448 @@ html
     function openLogin(){document.getElementById('loginOverlay').classList.add('open');document.getElementById('loginUsername').value='';document.getElementById('loginPassword').value='';document.getElementById('loginError').classList.remove('show')}
     function closeLogin(){document.getElementById('loginOverlay').classList.remove('open')}
     async function handleLogin(e){e.preventDefault();const u=document.getElementById('loginUsername').value.trim(),p=document.getElementById('loginPassword').value.trim(),btn=document.getElementById('loginBtn'),err=document.getElementById('loginError');err.classList.remove('show');btn.disabled=true;btn.textContent='...';try{const{data,error}=await db.from('admin_users').select('*').eq('username',u).eq('password',p).single();if(error||!data){err.classList.add('show');return}closeLogin();openAdmin();showToast('Welcome!','👋')}catch(ex){err.textContent=ex.message;err.classList.add('show')}finally{btn.disabled=false;btn.textContent='Login →'}}
-    function openAdmin(){document.getElementById('adminOverlay').classList.add('open');document.body.style.overflow='hidden';loadOrders();loadAdminReviews();loadMenuItems();loadSettingsUI()}
+    function openAdmin(){document.getElementById('adminOverlay').classList.add('open');document.body.style.overflow='hidden';loadDashboard();loadOrders();loadAdminReviews();loadMenuItems();loadSettingsUI();loadExpenses()}
     function closeAdmin(){document.getElementById('adminOverlay').classList.remove('open');document.body.style.overflow=''}
-    function switchAdminTab(tab,btn){document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.admin-tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('adminTab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');if(tab==='reviews')loadAdminReviews();if(tab==='menu')loadMenuItems();if(tab==='settings')loadSettingsUI()}
+    function switchAdminTab(tab,btn){document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.admin-tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('adminTab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');if(tab==='dashboard')loadDashboard();if(tab==='orders')loadOrders();if(tab==='expenses')loadExpenses();if(tab==='reviews')loadAdminReviews();if(tab==='menu')loadMenuItems();if(tab==='settings')loadSettingsUI()}
+
+    // DASHBOARD
+    async function loadDashboard(){
+        try{
+            const today=new Date();
+            today.setHours(0,0,0,0);
+            const todayISO=today.toISOString();
+            
+            // Get today's orders
+            const{data:todayOrders}=await db.from('orders').select('*,order_items(*)').gte('created_at',todayISO);
+            const orders=todayOrders||[];
+            
+            // Get yesterday's orders for comparison
+            const yesterday=new Date(today);
+            yesterday.setDate(yesterday.getDate()-1);
+            const{data:yesterdayOrders}=await db.from('orders').select('*').gte('created_at',yesterday.toISOString()).lt('created_at',todayISO);
+            
+            // Calculate today's stats
+            const todaySales=orders.reduce((s,o)=>s+parseFloat(o.total_amount||0),0);
+            const todayOrderCount=orders.length;
+            const yesterdaySales=(yesterdayOrders||[]).reduce((s,o)=>s+parseFloat(o.total_amount||0),0);
+            const yesterdayOrderCount=(yesterdayOrders||[]).length;
+            
+            // Calculate trends
+            const salesTrend=yesterdaySales>0?((todaySales-yesterdaySales)/yesterdaySales*100).toFixed(0):100;
+            const ordersTrend=yesterdayOrderCount>0?((todayOrderCount-yesterdayOrderCount)/yesterdayOrderCount*100).toFixed(0):100;
+            
+            // Calculate auto expense for today
+            let autoExpense=0;
+            for(let order of orders){
+                if(order.order_items){
+                    for(let item of order.order_items){
+                        const drink=allDrinks.find(d=>d.id===item.drink_id);
+                        if(drink&&drink.cost_price){
+                            autoExpense+=parseFloat(drink.cost_price)*item.quantity;
+                        }
+                    }
+                }
+            }
+            
+            // Get manual expenses for today
+            const{data:expensesData}=await db.from('manual_expenses').select('*').gte('created_at',todayISO);
+            const manualExpenseTotal=(expensesData||[]).reduce((s,e)=>s+parseFloat(e.amount||0),0);
+            
+            const totalExpense=autoExpense+manualExpenseTotal;
+            const netProfit=todaySales-totalExpense;
+            
+            // Update dashboard cards
+            document.getElementById('dashTodaySales').textContent='RM '+todaySales.toFixed(2);
+            document.getElementById('dashTodayOrders').textContent=todayOrderCount;
+            document.getElementById('dashNetProfit').textContent='RM '+netProfit.toFixed(2);
+            
+            const salesTrendEl=document.getElementById('dashSalesTrend');
+            salesTrendEl.textContent=(salesTrend>=0?'↑':'↓')+' '+Math.abs(salesTrend)+'%';
+            salesTrendEl.className='dashboard-card-trend '+(salesTrend>=0?'up':'down');
+            
+            const ordersTrendEl=document.getElementById('dashOrdersTrend');
+            ordersTrendEl.textContent=(ordersTrend>=0?'↑':'↓')+' '+Math.abs(ordersTrend)+'%';
+            ordersTrendEl.className='dashboard-card-trend '+(ordersTrend>=0?'up':'down');
+            
+            // Calculate returning customers
+            const{data:allOrdersData}=await db.from('orders').select('customer_name');
+            const customerNames=(allOrdersData||[]).map(o=>o.customer_name?.toLowerCase().trim()).filter(Boolean);
+            const uniqueCustomers=new Set(customerNames);
+            const returningCount=customerNames.length-uniqueCustomers.size;
+            const returningPercent=customerNames.length>0?((returningCount/customerNames.length)*100).toFixed(0):0;
+            document.getElementById('dashReturning').textContent=returningPercent+'%';
+            
+            // Load peak hours chart
+            loadPeakHoursChart(orders);
+            
+            // Load best selling drinks
+            loadBestSellingDrinks();
+            
+            // Load most profitable drinks
+            loadProfitableDrinks();
+            
+            // Load alerts
+            loadAlerts(orders);
+            
+        }catch(e){
+            console.error('Dashboard error:',e);
+        }
+    }
+
+    function loadPeakHoursChart(orders){
+        const hourCounts=Array(24).fill(0);
+        orders.forEach(o=>{
+            const hour=new Date(o.created_at).getHours();
+            hourCounts[hour]++;
+        });
+        
+        const ctx=document.getElementById('peakHoursChart').getContext('2d');
+        
+        if(peakHoursChart){
+            peakHoursChart.destroy();
+        }
+        
+        peakHoursChart=new Chart(ctx,{
+            type:'bar',
+            data:{
+                labels:Array.from({length:24},(_,i)=>i+':00'),
+                datasets:[{
+                    label:'Orders',
+                    data:hourCounts,
+                    backgroundColor:'rgba(255,107,53,0.6)',
+                    borderColor:'#ff6b35',
+                    borderWidth:2,
+                    borderRadius:8,
+                    barThickness:12
+                }]
+            },
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                plugins:{
+                    legend:{display:false}
+                },
+                scales:{
+                    y:{
+                        beginAtZero:true,
+                        ticks:{stepSize:1},
+                        grid:{color:'rgba(0,0,0,0.05)'}
+                    },
+                    x:{
+                        grid:{display:false},
+                        ticks:{
+                            maxRotation:0,
+                            callback:function(val,index){
+                                return index%3===0?this.getLabelForValue(val):'';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    async function loadBestSellingDrinks(){
+        try{
+            const{data}=await db.from('order_items').select('drink_id,drink_name,quantity');
+            const salesMap={};
+            (data||[]).forEach(i=>{
+                if(!salesMap[i.drink_id])salesMap[i.drink_id]={name:i.drink_name,qty:0};
+                salesMap[i.drink_id].qty+=i.quantity;
+            });
+            
+            const sorted=Object.entries(salesMap).sort((a,b)=>b[1].qty-a[1].qty).slice(0,5);
+            
+            const list=document.getElementById('topDrinksList');
+            if(!sorted.length){
+                list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No sales data yet</p>';
+                return;
+            }
+            
+            list.innerHTML=sorted.map(([id,data],i)=>{
+                const rankClass=['gold','silver','bronze'][i]||'';
+                const drink=allDrinks.find(d=>d.id==id);
+                return`<div class="top-drink-item"><div class="top-drink-rank ${rankClass}">${i+1}</div><div class="top-drink-info"><div class="top-drink-name">${data.name}</div><div class="top-drink-stats">${data.qty} cups sold</div></div><div class="top-drink-sales">${drink?'RM'+(data.qty*parseFloat(drink.price)).toFixed(2):''}</div></div>`;
+            }).join('');
+        }catch(e){
+            console.error(e);
+        }
+    }
+
+    async function loadProfitableDrinks(){
+        try{
+            const{data}=await db.from('order_items').select('drink_id,drink_name,quantity,unit_price');
+            const profitMap={};
+            (data||[]).forEach(i=>{
+                const drink=allDrinks.find(d=>d.id===i.drink_id);
+                const cost=drink?.cost_price||0;
+                const profit=(parseFloat(i.unit_price)-parseFloat(cost))*i.quantity;
+                if(!profitMap[i.drink_id])profitMap[i.drink_id]={name:i.drink_name,profit:0,qty:0};
+                profitMap[i.drink_id].profit+=profit;
+                profitMap[i.drink_id].qty+=i.quantity;
+            });
+            
+            const sorted=Object.entries(profitMap).sort((a,b)=>b[1].profit-a[1].profit).slice(0,5);
+            
+            const list=document.getElementById('profitableDrinksList');
+            if(!sorted.length){
+                list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No profit data yet</p>';
+                return;
+            }
+            
+            list.innerHTML=sorted.map(([id,data],i)=>{
+                const rankClass=['gold','silver','bronze'][i]||'';
+                return`<div class="top-drink-item"><div class="top-drink-rank ${rankClass}">${i+1}</div><div class="top-drink-info"><div class="top-drink-name">${data.name}</div><div class="top-drink-stats">${data.qty} cups • Profit margin</div></div><div class="top-drink-sales" style="color:#00b894">+RM${data.profit.toFixed(2)}</div></div>`;
+            }).join('');
+        }catch(e){
+            console.error(e);
+        }
+    }
+
+    function loadAlerts(todayOrders){
+        const alerts=[];
+        
+        // Check for pending orders
+        const pendingCount=todayOrders.filter(o=>o.status==='pending').length;
+        if(pendingCount>0){
+            alerts.push({type:'warning',icon:'⏳',text:`${pendingCount} orders pending - need attention!`});
+        }
+        
+        // Check for low activity
+        const hour=new Date().getHours();
+        if(hour>=10&&hour<=20&&todayOrders.length<3){
+            alerts.push({type:'warning',icon:'📉',text:'Low order volume today - consider promotions'});
+        }
+        
+        // Check drinks without cost set
+        const noCost=allDrinks.filter(d=>!d.cost_price||parseFloat(d.cost_price)===0);
+        if(noCost.length>0){
+            alerts.push({type:'danger',icon:'🚨',text:`${noCost.length} drinks have no cost set - update in Expenses tab`});
+        }
+        
+        // Success messages
+        if(todayOrders.length>=10){
+            alerts.push({type:'success',icon:'🎉',text:'Great day! 10+ orders already!'});
+        }
+        
+        const completedCount=todayOrders.filter(o=>o.status==='completed').length;
+        if(completedCount>=5){
+            alerts.push({type:'success',icon:'✅',text:`${completedCount} orders completed today`});
+        }
+        
+        if(!alerts.length){
+            alerts.push({type:'success',icon:'👍',text:'Everything looks good!'});
+        }
+        
+        document.getElementById('alertsList').innerHTML=alerts.map(a=>`<div class="alert-item ${a.type}"><span class="alert-icon">${a.icon}</span>${a.text}</div>`).join('');
+    }
+
+    // EXPENSES
+    async function loadExpenses(){
+        await loadManualExpenses();
+        await loadAutoExpenses();
+        calculateExpenseSummary();
+        renderDrinkCostEditor();
+    }
+
+    async function loadManualExpenses(){
+        try{
+            const today=new Date();
+            today.setHours(0,0,0,0);
+            const{data}=await db.from('manual_expenses').select('*').gte('created_at',today.toISOString()).order('created_at',{ascending:false});
+            manualExpenses=data||[];
+            renderManualExpenses();
+        }catch(e){
+            console.error(e);
+        }
+    }
+
+    function renderManualExpenses(){
+        const list=document.getElementById('manualExpenseList');
+        if(!manualExpenses.length){
+            list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No expenses added today</p>';
+            document.getElementById('manualExpenseTotalDisplay').textContent='RM 0.00';
+            return;
+        }
+        
+        const total=manualExpenses.reduce((s,e)=>s+parseFloat(e.amount),0);
+        document.getElementById('manualExpenseTotalDisplay').textContent='RM '+total.toFixed(2);
+        
+        list.innerHTML=manualExpenses.map(e=>{
+            const d=new Date(e.created_at);
+            return`<div class="expense-item"><div class="expense-item-info"><div class="expense-item-name">${e.name}</div><div class="expense-item-date">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div><div class="expense-item-amount">-RM${parseFloat(e.amount).toFixed(2)}</div><button class="expense-item-delete" onclick="deleteManualExpense(${e.id})">✕</button></div>`;
+        }).join('');
+    }
+
+    async function addManualExpense(){
+        const name=document.getElementById('expenseName').value.trim();
+        const amount=parseFloat(document.getElementById('expenseAmount').value);
+        
+        if(!name){showToast('Enter expense name','⚠️');return}
+        if(!amount||amount<=0){showToast('Enter valid amount','⚠️');return}
+        
+        try{
+            await db.from('manual_expenses').insert({name,amount});
+            document.getElementById('expenseName').value='';
+            document.getElementById('expenseAmount').value='';
+            await loadManualExpenses();
+            calculateExpenseSummary();
+            showToast('Expense added','✅');
+        }catch(e){
+            showToast('Failed to add expense','❌');
+        }
+    }
+
+    async function deleteManualExpense(id){
+        try{
+            await db.from('manual_expenses').delete().eq('id',id);
+            await loadManualExpenses();
+            calculateExpenseSummary();
+            showToast('Expense deleted','🗑️');
+        }catch(e){
+            showToast('Failed to delete','❌');
+        }
+    }
+
+    async function loadAutoExpenses(){
+        try{
+            const today=new Date();
+            today.setHours(0,0,0,0);
+            
+            const{data:orders}=await db.from('orders').select('*,order_items(*)').gte('created_at',today.toISOString());
+            
+            const drinkSales={};
+            (orders||[]).forEach(o=>{
+                (o.order_items||[]).forEach(item=>{
+                    if(!drinkSales[item.drink_id]){
+                        drinkSales[item.drink_id]={name:item.drink_name,qty:0};
+                    }
+                    drinkSales[item.drink_id].qty+=item.quantity;
+                });
+            });
+            
+            const list=document.getElementById('autoExpenseList');
+            const entries=Object.entries(drinkSales);
+            
+            if(!entries.length){
+                list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No sales today - auto expense is RM 0</p>';
+                document.getElementById('autoExpenseTotalDisplay').textContent='RM 0.00';
+                return;
+            }
+            
+            let totalAutoExpense=0;
+            
+            list.innerHTML=entries.map(([id,data])=>{
+                const drink=allDrinks.find(d=>d.id==id);
+                const cost=drink?.cost_price||0;
+                const totalCost=parseFloat(cost)*data.qty;
+                totalAutoExpense+=totalCost;
+                return`<div class="auto-expense-item"><div class="auto-expense-drink"><div class="auto-expense-name">${data.name}</div><div class="auto-expense-calc">${data.qty} cups × RM${parseFloat(cost).toFixed(2)} cost</div></div><div class="auto-expense-total">RM${totalCost.toFixed(2)}</div></div>`;
+            }).join('');
+            
+            document.getElementById('autoExpenseTotalDisplay').textContent='RM '+totalAutoExpense.toFixed(2);
+            
+        }catch(e){
+            console.error(e);
+        }
+    }
+
+    async function calculateExpenseSummary(){
+        const today=new Date();
+        today.setHours(0,0,0,0);
+        
+        try{
+            // Get today's sales
+            const{data:orders}=await db.from('orders').select('*,order_items(*)').gte('created_at',today.toISOString());
+            const todaySales=(orders||[]).reduce((s,o)=>s+parseFloat(o.total_amount||0),0);
+            
+            // Calculate auto expense
+            let autoExpense=0;
+            (orders||[]).forEach(o=>{
+                (o.order_items||[]).forEach(item=>{
+                    const drink=allDrinks.find(d=>d.id===item.drink_id);
+                    if(drink&&drink.cost_price){
+                        autoExpense+=parseFloat(drink.cost_price)*item.quantity;
+                    }
+                });
+            });
+            
+            // Get manual expense total
+            const manualTotal=manualExpenses.reduce((s,e)=>s+parseFloat(e.amount),0);
+            
+            // Calculate based on mode
+            let totalExpense=0;
+            if(expenseMode==='both')totalExpense=manualTotal+autoExpense;
+            else if(expenseMode==='manual')totalExpense=manualTotal;
+            else if(expenseMode==='auto')totalExpense=autoExpense;
+            
+            const netProfit=todaySales-totalExpense;
+            
+            // Update summary cards
+            document.getElementById('expTodaySales').textContent='RM '+todaySales.toFixed(2);
+            document.getElementById('expManualTotal').textContent='RM '+manualTotal.toFixed(2);
+            document.getElementById('expAutoTotal').textContent='RM '+autoExpense.toFixed(2);
+            document.getElementById('expTotalExpense').textContent='RM '+totalExpense.toFixed(2);
+            document.getElementById('expNetProfit').textContent='RM '+netProfit.toFixed(2);
+            
+            const profitCard=document.getElementById('expProfitCard');
+            profitCard.classList.remove('profit','loss');
+            profitCard.classList.add(netProfit>=0?'profit':'loss');
+            
+        }catch(e){
+            console.error(e);
+        }
+    }
+
+    function setExpenseMode(mode,btn){
+        expenseMode=mode;
+        document.querySelectorAll('.expense-toggle-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const manualSection=document.getElementById('manualExpenseSection');
+        const autoSection=document.getElementById('autoExpenseSection');
+        
+        if(mode==='manual'){
+            manualSection.style.display='block';
+            autoSection.style.display='none';
+        }else if(mode==='auto'){
+            manualSection.style.display='none';
+            autoSection.style.display='block';
+        }else{
+            manualSection.style.display='block';
+            autoSection.style.display='block';
+        }
+        
+        calculateExpenseSummary();
+    }
+
+    function renderDrinkCostEditor(){
+        const list=document.getElementById('costEditList');
+        if(!allDrinks.length){
+            list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No drinks found</p>';
+            return;
+        }
+        
+        list.innerHTML=allDrinks.map(d=>`<div class="cost-edit-item"><span>${d.emoji||'🧊'} ${d.name}</span><input type="number" id="cost_${d.id}" value="${d.cost_price||0}" step="0.01" min="0" placeholder="0.00"></div>`).join('');
+    }
+
+    async function saveDrinkCosts(){
+        try{
+            for(let drink of allDrinks){
+                const input=document.getElementById('cost_'+drink.id);
+                if(input){
+                    const cost=parseFloat(input.value)||0;
+                    await db.from('drinks').update({cost_price:cost}).eq('id',drink.id);
+                    drink.cost_price=cost;
+                }
+            }
+            await loadAutoExpenses();
+            calculateExpenseSummary();
+            showToast('Costs saved!','✅');
+        }catch(e){
+            showToast('Failed to save costs','❌');
+        }
+    }
 
     // SETTINGS
     function loadSettingsUI(){
@@ -1135,7 +1805,6 @@ html
         }catch(e){showToast(e.message,'❌')}
     }
 
-
     // ADMIN REVIEWS
     async function loadAdminReviews(){
         const grid=document.getElementById('adminReviewsGrid');
@@ -1217,6 +1886,7 @@ html
                         <div class="mi-cat">${d.categories?d.categories.name:''}</div>
                         <h4>${d.name}</h4>
                         <div class="mi-price">RM${parseFloat(d.price).toFixed(2)}</div>
+                        <div class="mi-cost">Cost: RM${parseFloat(d.cost_price||0).toFixed(2)}</div>
                     </div>
                     <div class="menu-item-actions">
                         <button class="mi-edit-btn" onclick="editItem(${d.id})">Edit</button>
@@ -1236,11 +1906,11 @@ html
         document.getElementById('itemEmoji').value=item?item.emoji||'':'';
         document.getElementById('itemDesc').value=item?item.description||'':'';
         document.getElementById('itemPrice').value=item?item.price:'';
+        document.getElementById('itemCost').value=item?item.cost_price||'':'';
         document.getElementById('itemBadge').value=item?item.badge||'':'';
         document.getElementById('itemOrder').value=item?item.display_order||0:0;
         document.getElementById('itemImageUrl').value=item?item.image_url||'':'';
         
-        // Set image preview
         const preview=document.getElementById('itemImagePreview');
         if(item&&item.image_url){
             preview.innerHTML=`<img src="${item.image_url}" alt="Preview"><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
@@ -1262,7 +1932,6 @@ html
         const file=input.files[0];
         const preview=document.getElementById('itemImagePreview');
         
-        // Show loading state
         preview.innerHTML=`<div class="upload-placeholder"><span>⏳</span><p>Uploading...</p></div><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
         
         try{
@@ -1304,6 +1973,7 @@ html
             emoji:document.getElementById('itemEmoji').value.trim()||'🧊',
             description:document.getElementById('itemDesc').value.trim(),
             price:parseFloat(document.getElementById('itemPrice').value),
+            cost_price:parseFloat(document.getElementById('itemCost').value)||0,
             category_id:document.getElementById('itemCategory').value,
             badge:document.getElementById('itemBadge').value.trim()||null,
             display_order:parseInt(document.getElementById('itemOrder').value)||0,
@@ -1321,7 +1991,6 @@ html
             }
             closeItemForm();
             
-            // Refresh drinks
             const{data}=await db.from('drinks').select('*,categories(*)').eq('is_available',true).order('display_order');
             allDrinks=data||[];
             renderDrinks(allDrinks);
