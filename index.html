@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -395,6 +396,7 @@
         .expense-card-label{font-size:10px;color:#b2bec3;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
         .expense-card.profit .expense-card-value{color:#00b894}
         .expense-card.loss .expense-card-value{color:#e74c3c}
+        .expense-card.income .expense-card-value{color:#00b894}
 
         .expense-toggle{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
         .expense-toggle-btn{padding:10px 20px;border:2px solid #e9ecef;background:white;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s}
@@ -404,21 +406,36 @@
         .expense-section{background:white;border-radius:20px;padding:20px;border:1px solid rgba(0,0,0,0.03)}
         .expense-section h3{font-size:14px;font-weight:800;color:#2d3436;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 
+        .entry-type-toggle{display:flex;gap:8px;margin-bottom:16px}
+        .entry-type-btn{flex:1;padding:12px 16px;border:2px solid #e9ecef;background:white;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.3s}
+        .entry-type-btn:hover{border-color:#ff6b35}
+        .entry-type-btn.active.expense-type{background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;border-color:transparent}
+        .entry-type-btn.active.income-type{background:linear-gradient(135deg,#00b894,#00cec9);color:white;border-color:transparent}
+        .entry-type-btn span{font-size:16px}
+
         .manual-expense-form{display:flex;gap:10px;margin-bottom:16px}
         .manual-expense-form input{flex:1;padding:12px 14px;border:2px solid #f0f2f5;border-radius:12px;font-size:13px;font-family:'Poppins',sans-serif}
         .manual-expense-form input:focus{outline:none;border-color:#ff6b35}
-        .manual-expense-form button{background:linear-gradient(135deg,#ff6b35,#f7931e);color:white;border:none;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+        .manual-expense-form button{background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;border:none;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:all 0.3s}
+        .manual-expense-form button.income-btn{background:linear-gradient(135deg,#00b894,#00cec9)}
 
-        .expense-list{max-height:300px;overflow-y:auto}
+        .income-section,.expense-section-inner{margin-top:20px;padding-top:16px;border-top:2px dashed #e9ecef}
+        .income-section h4,.expense-section-inner h4{font-size:13px;font-weight:700;color:#636e72;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+
+        .expense-list{max-height:200px;overflow-y:auto}
         .expense-item{display:flex;align-items:center;gap:12px;padding:12px;background:#fafbfe;border-radius:12px;margin-bottom:8px}
+        .expense-item.income-item{border-left:4px solid #00b894}
+        .expense-item.expense-item-type{border-left:4px solid #e74c3c}
         .expense-item-info{flex:1}
         .expense-item-name{font-size:13px;font-weight:600;color:#2d3436}
         .expense-item-date{font-size:10px;color:#b2bec3}
         .expense-item-amount{font-size:14px;font-weight:800;color:#e74c3c}
+        .expense-item-amount.income-amount{color:#00b894!important}
         .expense-item-delete{background:none;border:none;color:#dfe6e9;font-size:14px;cursor:pointer;padding:4px}
         .expense-item-delete:hover{color:#e74c3c}
 
         .expense-total-row{display:flex;justify-content:space-between;padding:14px;background:linear-gradient(135deg,#fff5f0,#ffe8d6);border-radius:12px;margin-top:12px;font-weight:700}
+        .expense-total-row.income-total{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)!important}
         .expense-total-label{color:#636e72}
         .expense-total-amount{color:#ff6b35;font-size:18px}
 
@@ -557,6 +574,8 @@
             .settings-row{flex-direction:column}
             .dashboard-grid{grid-template-columns:1fr}.dashboard-card-value{font-size:22px}
             .expense-summary{grid-template-columns:repeat(2,1fr)}.expense-sections{grid-template-columns:1fr}
+            .manual-expense-form{flex-direction:column}
+            .entry-type-toggle{flex-direction:column}
             footer{padding-bottom:70px}
         }
         @media(max-width:380px){.drinks-grid{grid-template-columns:1fr}.hero h1{font-size:24px}.hero-stats{flex-wrap:wrap;gap:16px}.admin-stats{grid-template-columns:1fr}.expense-summary{grid-template-columns:1fr}}
@@ -767,20 +786,20 @@
                         <div class="expense-card-value" id="expTodaySales">RM 0</div>
                         <div class="expense-card-label">Today Sales</div>
                     </div>
+                    <div class="expense-card income">
+                        <div class="expense-card-icon">📥</div>
+                        <div class="expense-card-value" id="expIncomeTotal">+RM 0</div>
+                        <div class="expense-card-label">Manual Income</div>
+                    </div>
                     <div class="expense-card">
-                        <div class="expense-card-icon">📝</div>
-                        <div class="expense-card-value" id="expManualTotal">RM 0</div>
+                        <div class="expense-card-icon">📤</div>
+                        <div class="expense-card-value" id="expManualTotal">-RM 0</div>
                         <div class="expense-card-label">Manual Expense</div>
                     </div>
                     <div class="expense-card">
                         <div class="expense-card-icon">🧮</div>
-                        <div class="expense-card-value" id="expAutoTotal">RM 0</div>
+                        <div class="expense-card-value" id="expAutoTotal">-RM 0</div>
                         <div class="expense-card-label">Auto Expense</div>
-                    </div>
-                    <div class="expense-card">
-                        <div class="expense-card-icon">📉</div>
-                        <div class="expense-card-value" id="expTotalExpense">RM 0</div>
-                        <div class="expense-card-label">Total Expense</div>
                     </div>
                     <div class="expense-card profit" id="expProfitCard">
                         <div class="expense-card-icon">📈</div>
@@ -797,18 +816,43 @@
 
                 <div class="expense-sections">
                     <div class="expense-section" id="manualExpenseSection">
-                        <h3>📝 Manual Expenses</h3>
+                        <h3>📝 Manual Income & Expenses</h3>
+                        
+                        <div class="entry-type-toggle">
+                            <button class="entry-type-btn active expense-type" id="btnExpense" onclick="setEntryType('expense')">
+                                <span>➖</span> Expense
+                            </button>
+                            <button class="entry-type-btn" id="btnIncome" onclick="setEntryType('income')">
+                                <span>➕</span> Income
+                            </button>
+                        </div>
+                        
                         <div class="manual-expense-form">
-                            <input type="text" id="expenseName" placeholder="Expense name (e.g., Milk Purchase)">
+                            <input type="text" id="expenseName" placeholder="Enter name (e.g., Milk Purchase)">
                             <input type="number" id="expenseAmount" placeholder="Amount (RM)" step="0.01" min="0">
-                            <button onclick="addManualExpense()">+ Add</button>
+                            <button onclick="addManualEntry()" id="addEntryBtn">➖ Add Expense</button>
                         </div>
-                        <div class="expense-list" id="manualExpenseList">
-                            <p style="color:#b2bec3;text-align:center;padding:20px">No expenses added</p>
+                        
+                        <div class="income-section">
+                            <h4>📥 Income (+)</h4>
+                            <div class="expense-list" id="incomeList">
+                                <p style="color:#b2bec3;text-align:center;padding:20px">No income added</p>
+                            </div>
+                            <div class="expense-total-row income-total">
+                                <span class="expense-total-label">Income Total:</span>
+                                <span class="expense-total-amount" id="incomeTotalDisplay" style="color:#00b894">+RM 0.00</span>
+                            </div>
                         </div>
-                        <div class="expense-total-row">
-                            <span class="expense-total-label">Manual Total:</span>
-                            <span class="expense-total-amount" id="manualExpenseTotalDisplay">RM 0.00</span>
+                        
+                        <div class="expense-section-inner">
+                            <h4>📤 Expenses (-)</h4>
+                            <div class="expense-list" id="manualExpenseList">
+                                <p style="color:#b2bec3;text-align:center;padding:20px">No expenses added</p>
+                            </div>
+                            <div class="expense-total-row">
+                                <span class="expense-total-label">Expense Total:</span>
+                                <span class="expense-total-amount" id="manualExpenseTotalDisplay" style="color:#e74c3c">-RM 0.00</span>
+                            </div>
                         </div>
                     </div>
 
@@ -819,7 +863,7 @@
                         </div>
                         <div class="expense-total-row">
                             <span class="expense-total-label">Auto Total:</span>
-                            <span class="expense-total-amount" id="autoExpenseTotalDisplay">RM 0.00</span>
+                            <span class="expense-total-amount" id="autoExpenseTotalDisplay" style="color:#e74c3c">-RM 0.00</span>
                         </div>
 
                         <div class="drink-cost-editor">
@@ -912,7 +956,7 @@
                 <div class="form-group"><label>Description</label><textarea id="itemDesc"></textarea></div>
                 <div class="form-row">
                     <div class="form-group"><label>Price (RM)</label><input type="number" id="itemPrice" step="0.01" min="0" required></div>
-                    <div class="form-group"><label>Cost (RM)</label><input type="number" id="itemCost" step="0.01" min="0" placeholder="Ingredient cost per cup"></div>
+                    <div class="form-group"><label>Cost (RM)</label><input type="number" id="itemCost" step="0.01" min="0" placeholder="Ingredient cost"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Category</label><select id="itemCategory"></select></div>
@@ -935,8 +979,9 @@
     <script>
     const SB_URL='https://lujvipglowanpauxwwgd.supabase.co';
     const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1anZpcGdsb3dhbnBhdXh3d2dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwODc4MDcsImV4cCI6MjA4NjY2MzgwN30.ZcKhM1Qs5V5cBClEuQclbACcEdem7nlGfMuSZjcMVaM';
-    let db,allDrinks=[],allCategories=[],cart=[],allOrders=[],myOrders=[],allReviews=[],siteSettings={},manualExpenses=[];
-    let currentCategory='all',currentStatusFilter='all',currentReviewFilter='pending',expenseMode='both';
+    let db,allDrinks=[],allCategories=[],cart=[],allOrders=[],myOrders=[],allReviews=[],siteSettings={};
+    let manualExpenses=[],manualIncomes=[];
+    let currentCategory='all',currentStatusFilter='all',currentReviewFilter='pending',expenseMode='both',currentEntryType='expense';
     let currentReceiptOrder=null,pendingReviewOrder=null,selectedRating=5;
     let orderPollingInterval=null,peakHoursChart=null;
 
@@ -956,16 +1001,13 @@
 
     function showLiveUpdate(message){const badge=document.getElementById('liveUpdateBadge');badge.textContent='🔔 '+message;badge.classList.add('show');setTimeout(()=>badge.classList.remove('show'),3000)}
 
-    // INIT
     async function initApp(){
         const ld=document.getElementById('loadingDetail');
         try{
             ld.textContent='Connecting...';
             db=window.supabase.createClient(SB_URL,SB_KEY);
-            
             ld.textContent='Loading settings...';
             await loadSiteSettings();
-            
             ld.textContent='Loading menu...';
             const[cR,dR]=await Promise.all([
                 db.from('categories').select('*').order('display_order'),
@@ -975,7 +1017,6 @@
             if(dR.error)throw dR.error;
             allCategories=cR.data||[];
             allDrinks=dR.data||[];
-            
             renderCatBtns();
             renderDrinks(allDrinks);
             await loadMyOrdersFromDB();
@@ -989,21 +1030,16 @@
         }
     }
 
-    // SITE SETTINGS
     async function loadSiteSettings(){
         try{
             const{data}=await db.from('site_settings').select('*');
-            if(data){
-                data.forEach(s=>{siteSettings[s.setting_key]=s.setting_value});
-                applySiteSettings();
-            }
+            if(data){data.forEach(s=>{siteSettings[s.setting_key]=s.setting_value});applySiteSettings()}
         }catch(e){console.log('Settings error:',e)}
     }
 
     function applySiteSettings(){
         const logoUrl=siteSettings.logo_url;
         const siteName=siteSettings.site_name||'Jigarthanda Cafe';
-        
         if(logoUrl){
             document.getElementById('loadingLogo').innerHTML=`<img src="${logoUrl}" class="loading-logo" alt="Logo">`;
             document.getElementById('headerLogoIcon').innerHTML=`<img src="${logoUrl}" alt="Logo">`;
@@ -1011,13 +1047,11 @@
             document.getElementById('heroLogo').className='';
             document.getElementById('footerLogo').innerHTML=`<img src="${logoUrl}" alt="Logo"> ${siteName}`;
         }
-        
         document.getElementById('loadingSiteName').textContent=siteName;
         document.getElementById('heroSiteName').textContent=siteName;
         document.title=siteName;
     }
 
-    // ORDER POLLING
     function startOrderPolling(){
         if(orderPollingInterval)clearInterval(orderPollingInterval);
         orderPollingInterval=setInterval(async()=>{
@@ -1050,21 +1084,15 @@
     function renderCatBtns(){const c=document.getElementById('categoryFilters');c.innerHTML='<button class="filter-btn active" onclick="filterDrinks(\'all\',this)">🍹 All</button>';allCategories.forEach(cat=>{const b=document.createElement('button');b.className='filter-btn';b.textContent=(cat.emoji||'')+' '+cat.name;b.onclick=function(){filterDrinks(cat.id,this)};c.appendChild(b)})}
     
     function renderDrinks(list){
-        const g=document.getElementById('drinksGrid');
-        g.innerHTML='';
-        if(!list||!list.length){
-            g.innerHTML='<div class="no-drinks"><p style="font-size:50px;opacity:0.5">🔍</p><h3>No drinks found</h3></div>';
-            document.getElementById('resultsCount').textContent='';
-            return;
-        }
+        const g=document.getElementById('drinksGrid');g.innerHTML='';
+        if(!list||!list.length){g.innerHTML='<div class="no-drinks"><p style="font-size:50px;opacity:0.5">🔍</p><h3>No drinks found</h3></div>';document.getElementById('resultsCount').textContent='';return}
         document.getElementById('resultsCount').textContent='Showing '+list.length+' drink'+(list.length>1?'s':'');
         list.forEach((d,i)=>{
             const cn=d.categories?d.categories.name:'';
             const bc=getBc(d.badge);
             const imgContent=d.image_url?`<img src="${d.image_url}" alt="${d.name}">`:(d.emoji||'🧊');
             const c=document.createElement('div');
-            c.className='drink-card';
-            c.style.animationDelay=(i*0.05)+'s';
+            c.className='drink-card';c.style.animationDelay=(i*0.05)+'s';
             c.innerHTML=(d.badge?'<div class="badge '+bc+'">'+d.badge+'</div>':'')+'<div class="drink-img">'+imgContent+'</div><div class="drink-info"><div class="category-tag">'+cn+'</div><h3>'+d.name+'</h3><p class="description">'+(d.description||'Handcrafted drink')+'</p><div class="drink-bottom"><span class="price"><span class="currency">RM</span>'+parseFloat(d.price).toFixed(2)+'</span><button class="add-btn" onclick="addToCart('+d.id+',this)">Add +</button></div></div>';
             g.appendChild(c);
         });
@@ -1074,7 +1102,6 @@
     function filterDrinks(cid,btn){currentCategory=cid;document.querySelectorAll('.filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilters()}
     function applyFilters(){let list=[...allDrinks];if(currentCategory!=='all')list=list.filter(d=>d.category_id===currentCategory);const s=document.getElementById('searchInput').value.trim().toLowerCase();if(s)list=list.filter(d=>d.name.toLowerCase().includes(s));const so=document.getElementById('sortSelect').value;if(so==='price-low')list.sort((a,b)=>a.price-b.price);else if(so==='price-high')list.sort((a,b)=>b.price-a.price);else if(so==='name-az')list.sort((a,b)=>a.name.localeCompare(b.name));renderDrinks(list)}
 
-    // REVIEWS
     async function loadApprovedReviews(){
         try{
             const{data,error}=await db.from('reviews').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(12);
@@ -1082,18 +1109,12 @@
             allReviews=data||[];
             renderPublicReviews();
             updateRatingStats();
-        }catch(e){
-            console.log('Reviews error:',e);
-            document.getElementById('reviewsGrid').innerHTML='<div class="no-reviews"><p style="font-size:40px">⭐</p><p>No reviews yet</p></div>';
-        }
+        }catch(e){console.log('Reviews error:',e);document.getElementById('reviewsGrid').innerHTML='<div class="no-reviews"><p style="font-size:40px">⭐</p><p>No reviews yet</p></div>'}
     }
 
     function renderPublicReviews(){
         const grid=document.getElementById('reviewsGrid');
-        if(!allReviews.length){
-            grid.innerHTML='<div class="no-reviews"><p style="font-size:40px">⭐</p><p>No reviews yet. Be the first!</p></div>';
-            return;
-        }
+        if(!allReviews.length){grid.innerHTML='<div class="no-reviews"><p style="font-size:40px">⭐</p><p>No reviews yet. Be the first!</p></div>';return}
         grid.innerHTML=allReviews.map(r=>{
             const stars=Array(5).fill(0).map((_,i)=>`<span ${i<r.rating?'':'class="empty"'}>★</span>`).join('');
             const initial=r.customer_name?r.customer_name.charAt(0).toUpperCase():'?';
@@ -1102,11 +1123,7 @@
         }).join('');
     }
 
-    function updateRatingStats(){
-        if(!allReviews.length)return;
-        const avg=(allReviews.reduce((s,r)=>s+r.rating,0)/allReviews.length).toFixed(1);
-        document.getElementById('statRating').textContent=avg+'★';
-    }
+    function updateRatingStats(){if(!allReviews.length)return;const avg=(allReviews.reduce((s,r)=>s+r.rating,0)/allReviews.length).toFixed(1);document.getElementById('statRating').textContent=avg+'★'}
 
     function openReviewModal(order){pendingReviewOrder=order;selectedRating=5;updateStarUI();document.getElementById('reviewText').value='';document.getElementById('reviewOverlay').classList.add('open')}
     function closeReviewModal(){document.getElementById('reviewOverlay').classList.remove('open');pendingReviewOrder=null}
@@ -1115,20 +1132,16 @@
 
     async function submitReview(){
         if(!pendingReviewOrder)return;
-        const btn=document.getElementById('reviewSubmitBtn');
-        btn.disabled=true;btn.textContent='Submitting...';
+        const btn=document.getElementById('reviewSubmitBtn');btn.disabled=true;btn.textContent='Submitting...';
         try{
             const text=document.getElementById('reviewText').value.trim();
             await db.from('reviews').insert({order_id:pendingReviewOrder.orderId,customer_name:pendingReviewOrder.name,rating:selectedRating,review_text:text||null,status:'pending'});
-            closeReviewModal();
-            showToast('Thank you for your review!','⭐');
+            closeReviewModal();showToast('Thank you for your review!','⭐');
         }catch(e){showToast('Failed to submit','❌')}finally{btn.disabled=false;btn.textContent='Submit Review'}
     }
 
-    // CART
     function addToCart(id,btn){
-        const d=allDrinks.find(x=>x.id===id);
-        if(!d)return;
+        const d=allDrinks.find(x=>x.id===id);if(!d)return;
         const ex=cart.find(i=>i.id===id);
         if(ex)ex.quantity++;
         else cart.push({id:d.id,name:d.name,price:parseFloat(d.price),cost:parseFloat(d.cost_price||0),emoji:d.emoji||'🧊',image_url:d.image_url,quantity:1});
@@ -1140,16 +1153,10 @@
     function changeQty(id,d){const i=cart.find(x=>x.id===id);if(!i)return;i.quantity+=d;if(i.quantity<=0){removeFromCart(id);return}updateCartUI()}
     function updateCartUI(){
         const cnt=cart.reduce((s,i)=>s+i.quantity,0);
-        const ce=document.getElementById('cartCount');
-        ce.textContent=cnt;ce.classList.remove('bump');void ce.offsetWidth;ce.classList.add('bump');
-        document.getElementById('mobileCartCount').textContent=cnt;
-        updateMobileCart();
+        const ce=document.getElementById('cartCount');ce.textContent=cnt;ce.classList.remove('bump');void ce.offsetWidth;ce.classList.add('bump');
+        document.getElementById('mobileCartCount').textContent=cnt;updateMobileCart();
         const ci=document.getElementById('cartItems'),cf=document.getElementById('cartFooter');
-        if(!cart.length){
-            ci.innerHTML='<div class="empty-cart"><p style="font-size:50px;opacity:0.3">🧊</p><p><strong>Cart is empty</strong></p></div>';
-            cf.innerHTML='';
-            return;
-        }
+        if(!cart.length){ci.innerHTML='<div class="empty-cart"><p style="font-size:50px;opacity:0.3">🧊</p><p><strong>Cart is empty</strong></p></div>';cf.innerHTML='';return}
         ci.innerHTML=cart.map(i=>{
             const imgContent=i.image_url?`<img src="${i.image_url}" alt="${i.name}">`:i.emoji;
             return`<div class="cart-item"><div class="cart-item-img">${imgContent}</div><div class="cart-item-details"><h4>${i.name}</h4><div class="item-price">RM${(i.price*i.quantity).toFixed(2)}</div><div class="quantity-controls"><button class="qty-btn" onclick="changeQty(${i.id},-1)">−</button><span class="qty-number">${i.quantity}</span><button class="qty-btn" onclick="changeQty(${i.id},1)">+</button></div></div><button class="remove-btn" onclick="removeFromCart(${i.id})">✕</button></div>`;
@@ -1159,7 +1166,6 @@
     }
     function toggleCart(){document.getElementById('cartOverlay').classList.toggle('open')}
 
-    // PAYMENT
     let pendingOrderData=null,selectedPayment='cash';
     function goToPayment(){
         if(!cart.length)return;
@@ -1177,8 +1183,7 @@
 
     async function confirmOrder(){
         if(!pendingOrderData)return;
-        const btn=document.getElementById('payConfirmBtn');
-        btn.disabled=true;btn.textContent='Processing...';
+        const btn=document.getElementById('payConfirmBtn');btn.disabled=true;btn.textContent='Processing...';
         try{
             const d=pendingOrderData;
             const{data:order,error:oE}=await db.from('orders').insert({customer_name:d.name,total_amount:d.total,status:'pending',payment_method:selectedPayment,payment_status:selectedPayment==='cash'?'pay at counter':'paid online'}).select().single();
@@ -1195,7 +1200,6 @@
         }catch(e){showToast('Failed: '+e.message,'❌');btn.disabled=false;btn.textContent='✅ Confirm Order'}
     }
 
-    // MY ORDERS
     async function loadMyOrdersFromDB(){
         try{
             const orderIds=JSON.parse(localStorage.getItem('jc_user_order_ids')||'[]');
@@ -1226,7 +1230,6 @@
         }).join('');
     }
 
-    // RECEIPT
     function showReceipt(order){
         if(!order)return;
         currentReceiptOrder=order;
@@ -1253,7 +1256,6 @@
         showToast('Receipt downloaded!','📥');
     }
 
-    // LOGIN & ADMIN
     function openLogin(){document.getElementById('loginOverlay').classList.add('open');document.getElementById('loginUsername').value='';document.getElementById('loginPassword').value='';document.getElementById('loginError').classList.remove('show')}
     function closeLogin(){document.getElementById('loginOverlay').classList.remove('open')}
     async function handleLogin(e){e.preventDefault();const u=document.getElementById('loginUsername').value.trim(),p=document.getElementById('loginPassword').value.trim(),btn=document.getElementById('loginBtn'),err=document.getElementById('loginError');err.classList.remove('show');btn.disabled=true;btn.textContent='...';try{const{data,error}=await db.from('admin_users').select('*').eq('username',u).eq('password',p).single();if(error||!data){err.classList.add('show');return}closeLogin();openAdmin();showToast('Welcome!','👋')}catch(ex){err.textContent=ex.message;err.classList.add('show')}finally{btn.disabled=false;btn.textContent='Login →'}}
@@ -1264,137 +1266,63 @@
     // DASHBOARD
     async function loadDashboard(){
         try{
-            const today=new Date();
-            today.setHours(0,0,0,0);
+            const today=new Date();today.setHours(0,0,0,0);
             const todayISO=today.toISOString();
-            
-            // Get today's orders
             const{data:todayOrders}=await db.from('orders').select('*,order_items(*)').gte('created_at',todayISO);
             const orders=todayOrders||[];
-            
-            // Get yesterday's orders for comparison
-            const yesterday=new Date(today);
-            yesterday.setDate(yesterday.getDate()-1);
+            const yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);
             const{data:yesterdayOrders}=await db.from('orders').select('*').gte('created_at',yesterday.toISOString()).lt('created_at',todayISO);
-            
-            // Calculate today's stats
             const todaySales=orders.reduce((s,o)=>s+parseFloat(o.total_amount||0),0);
             const todayOrderCount=orders.length;
             const yesterdaySales=(yesterdayOrders||[]).reduce((s,o)=>s+parseFloat(o.total_amount||0),0);
             const yesterdayOrderCount=(yesterdayOrders||[]).length;
-            
-            // Calculate trends
             const salesTrend=yesterdaySales>0?((todaySales-yesterdaySales)/yesterdaySales*100).toFixed(0):100;
             const ordersTrend=yesterdayOrderCount>0?((todayOrderCount-yesterdayOrderCount)/yesterdayOrderCount*100).toFixed(0):100;
-            
-            // Calculate auto expense for today
             let autoExpense=0;
             for(let order of orders){
                 if(order.order_items){
                     for(let item of order.order_items){
                         const drink=allDrinks.find(d=>d.id===item.drink_id);
-                        if(drink&&drink.cost_price){
-                            autoExpense+=parseFloat(drink.cost_price)*item.quantity;
-                        }
+                        if(drink&&drink.cost_price){autoExpense+=parseFloat(drink.cost_price)*item.quantity}
                     }
                 }
             }
-            
-            // Get manual expenses for today
             const{data:expensesData}=await db.from('manual_expenses').select('*').gte('created_at',todayISO);
-            const manualExpenseTotal=(expensesData||[]).reduce((s,e)=>s+parseFloat(e.amount||0),0);
-            
+            const manualExpenseTotal=(expensesData||[]).filter(e=>e.type==='expense'||!e.type).reduce((s,e)=>s+parseFloat(e.amount||0),0);
+            const manualIncomeTotal=(expensesData||[]).filter(e=>e.type==='income').reduce((s,e)=>s+parseFloat(e.amount||0),0);
             const totalExpense=autoExpense+manualExpenseTotal;
-            const netProfit=todaySales-totalExpense;
-            
-            // Update dashboard cards
+            const netProfit=todaySales+manualIncomeTotal-totalExpense;
             document.getElementById('dashTodaySales').textContent='RM '+todaySales.toFixed(2);
             document.getElementById('dashTodayOrders').textContent=todayOrderCount;
             document.getElementById('dashNetProfit').textContent='RM '+netProfit.toFixed(2);
-            
             const salesTrendEl=document.getElementById('dashSalesTrend');
             salesTrendEl.textContent=(salesTrend>=0?'↑':'↓')+' '+Math.abs(salesTrend)+'%';
             salesTrendEl.className='dashboard-card-trend '+(salesTrend>=0?'up':'down');
-            
             const ordersTrendEl=document.getElementById('dashOrdersTrend');
             ordersTrendEl.textContent=(ordersTrend>=0?'↑':'↓')+' '+Math.abs(ordersTrend)+'%';
             ordersTrendEl.className='dashboard-card-trend '+(ordersTrend>=0?'up':'down');
-            
-            // Calculate returning customers
             const{data:allOrdersData}=await db.from('orders').select('customer_name');
             const customerNames=(allOrdersData||[]).map(o=>o.customer_name?.toLowerCase().trim()).filter(Boolean);
             const uniqueCustomers=new Set(customerNames);
             const returningCount=customerNames.length-uniqueCustomers.size;
             const returningPercent=customerNames.length>0?((returningCount/customerNames.length)*100).toFixed(0):0;
             document.getElementById('dashReturning').textContent=returningPercent+'%';
-            
-            // Load peak hours chart
             loadPeakHoursChart(orders);
-            
-            // Load best selling drinks
             loadBestSellingDrinks();
-            
-            // Load most profitable drinks
             loadProfitableDrinks();
-            
-            // Load alerts
             loadAlerts(orders);
-            
-        }catch(e){
-            console.error('Dashboard error:',e);
-        }
+        }catch(e){console.error('Dashboard error:',e)}
     }
 
     function loadPeakHoursChart(orders){
         const hourCounts=Array(24).fill(0);
-        orders.forEach(o=>{
-            const hour=new Date(o.created_at).getHours();
-            hourCounts[hour]++;
-        });
-        
+        orders.forEach(o=>{const hour=new Date(o.created_at).getHours();hourCounts[hour]++});
         const ctx=document.getElementById('peakHoursChart').getContext('2d');
-        
-        if(peakHoursChart){
-            peakHoursChart.destroy();
-        }
-        
+        if(peakHoursChart){peakHoursChart.destroy()}
         peakHoursChart=new Chart(ctx,{
             type:'bar',
-            data:{
-                labels:Array.from({length:24},(_,i)=>i+':00'),
-                datasets:[{
-                    label:'Orders',
-                    data:hourCounts,
-                    backgroundColor:'rgba(255,107,53,0.6)',
-                    borderColor:'#ff6b35',
-                    borderWidth:2,
-                    borderRadius:8,
-                    barThickness:12
-                }]
-            },
-            options:{
-                responsive:true,
-                maintainAspectRatio:false,
-                plugins:{
-                    legend:{display:false}
-                },
-                scales:{
-                    y:{
-                        beginAtZero:true,
-                        ticks:{stepSize:1},
-                        grid:{color:'rgba(0,0,0,0.05)'}
-                    },
-                    x:{
-                        grid:{display:false},
-                        ticks:{
-                            maxRotation:0,
-                            callback:function(val,index){
-                                return index%3===0?this.getLabelForValue(val):'';
-                            }
-                        }
-                    }
-                }
-            }
+            data:{labels:Array.from({length:24},(_,i)=>i+':00'),datasets:[{label:'Orders',data:hourCounts,backgroundColor:'rgba(255,107,53,0.6)',borderColor:'#ff6b35',borderWidth:2,borderRadius:8,barThickness:12}]},
+            options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false},ticks:{maxRotation:0,callback:function(val,index){return index%3===0?this.getLabelForValue(val):''}}}}}
         });
     }
 
@@ -1402,27 +1330,16 @@
         try{
             const{data}=await db.from('order_items').select('drink_id,drink_name,quantity');
             const salesMap={};
-            (data||[]).forEach(i=>{
-                if(!salesMap[i.drink_id])salesMap[i.drink_id]={name:i.drink_name,qty:0};
-                salesMap[i.drink_id].qty+=i.quantity;
-            });
-            
+            (data||[]).forEach(i=>{if(!salesMap[i.drink_id])salesMap[i.drink_id]={name:i.drink_name,qty:0};salesMap[i.drink_id].qty+=i.quantity});
             const sorted=Object.entries(salesMap).sort((a,b)=>b[1].qty-a[1].qty).slice(0,5);
-            
             const list=document.getElementById('topDrinksList');
-            if(!sorted.length){
-                list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No sales data yet</p>';
-                return;
-            }
-            
+            if(!sorted.length){list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No sales data yet</p>';return}
             list.innerHTML=sorted.map(([id,data],i)=>{
                 const rankClass=['gold','silver','bronze'][i]||'';
                 const drink=allDrinks.find(d=>d.id==id);
                 return`<div class="top-drink-item"><div class="top-drink-rank ${rankClass}">${i+1}</div><div class="top-drink-info"><div class="top-drink-name">${data.name}</div><div class="top-drink-stats">${data.qty} cups sold</div></div><div class="top-drink-sales">${drink?'RM'+(data.qty*parseFloat(drink.price)).toFixed(2):''}</div></div>`;
             }).join('');
-        }catch(e){
-            console.error(e);
-        }
+        }catch(e){console.error(e)}
     }
 
     async function loadProfitableDrinks(){
@@ -1437,248 +1354,186 @@
                 profitMap[i.drink_id].profit+=profit;
                 profitMap[i.drink_id].qty+=i.quantity;
             });
-            
             const sorted=Object.entries(profitMap).sort((a,b)=>b[1].profit-a[1].profit).slice(0,5);
-            
             const list=document.getElementById('profitableDrinksList');
-            if(!sorted.length){
-                list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No profit data yet</p>';
-                return;
-            }
-            
+            if(!sorted.length){list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No profit data yet</p>';return}
             list.innerHTML=sorted.map(([id,data],i)=>{
                 const rankClass=['gold','silver','bronze'][i]||'';
                 return`<div class="top-drink-item"><div class="top-drink-rank ${rankClass}">${i+1}</div><div class="top-drink-info"><div class="top-drink-name">${data.name}</div><div class="top-drink-stats">${data.qty} cups • Profit margin</div></div><div class="top-drink-sales" style="color:#00b894">+RM${data.profit.toFixed(2)}</div></div>`;
             }).join('');
-        }catch(e){
-            console.error(e);
-        }
+        }catch(e){console.error(e)}
     }
 
     function loadAlerts(todayOrders){
         const alerts=[];
-        
-        // Check for pending orders
         const pendingCount=todayOrders.filter(o=>o.status==='pending').length;
-        if(pendingCount>0){
-            alerts.push({type:'warning',icon:'⏳',text:`${pendingCount} orders pending - need attention!`});
-        }
-        
-        // Check for low activity
+        if(pendingCount>0){alerts.push({type:'warning',icon:'⏳',text:`${pendingCount} orders pending - need attention!`})}
         const hour=new Date().getHours();
-        if(hour>=10&&hour<=20&&todayOrders.length<3){
-            alerts.push({type:'warning',icon:'📉',text:'Low order volume today - consider promotions'});
-        }
-        
-        // Check drinks without cost set
+        if(hour>=10&&hour<=20&&todayOrders.length<3){alerts.push({type:'warning',icon:'📉',text:'Low order volume today - consider promotions'})}
         const noCost=allDrinks.filter(d=>!d.cost_price||parseFloat(d.cost_price)===0);
-        if(noCost.length>0){
-            alerts.push({type:'danger',icon:'🚨',text:`${noCost.length} drinks have no cost set - update in Expenses tab`});
-        }
-        
-        // Success messages
-        if(todayOrders.length>=10){
-            alerts.push({type:'success',icon:'🎉',text:'Great day! 10+ orders already!'});
-        }
-        
+        if(noCost.length>0){alerts.push({type:'danger',icon:'🚨',text:`${noCost.length} drinks have no cost set - update in Expenses tab`})}
+        if(todayOrders.length>=10){alerts.push({type:'success',icon:'🎉',text:'Great day! 10+ orders already!'})}
         const completedCount=todayOrders.filter(o=>o.status==='completed').length;
-        if(completedCount>=5){
-            alerts.push({type:'success',icon:'✅',text:`${completedCount} orders completed today`});
-        }
-        
-        if(!alerts.length){
-            alerts.push({type:'success',icon:'👍',text:'Everything looks good!'});
-        }
-        
+        if(completedCount>=5){alerts.push({type:'success',icon:'✅',text:`${completedCount} orders completed today`})}
+        if(!alerts.length){alerts.push({type:'success',icon:'👍',text:'Everything looks good!'})}
         document.getElementById('alertsList').innerHTML=alerts.map(a=>`<div class="alert-item ${a.type}"><span class="alert-icon">${a.icon}</span>${a.text}</div>`).join('');
     }
 
     // EXPENSES
     async function loadExpenses(){
-        await loadManualExpenses();
+        await loadManualEntries();
         await loadAutoExpenses();
         calculateExpenseSummary();
         renderDrinkCostEditor();
     }
 
-    async function loadManualExpenses(){
+    async function loadManualEntries(){
         try{
-            const today=new Date();
-            today.setHours(0,0,0,0);
+            const today=new Date();today.setHours(0,0,0,0);
             const{data}=await db.from('manual_expenses').select('*').gte('created_at',today.toISOString()).order('created_at',{ascending:false});
-            manualExpenses=data||[];
+            manualExpenses=(data||[]).filter(e=>e.type==='expense'||!e.type);
+            manualIncomes=(data||[]).filter(e=>e.type==='income');
             renderManualExpenses();
-        }catch(e){
-            console.error(e);
-        }
+            renderManualIncomes();
+        }catch(e){console.error(e)}
+    }
+
+    function renderManualIncomes(){
+        const list=document.getElementById('incomeList');
+        if(!manualIncomes.length){list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No income added today</p>';document.getElementById('incomeTotalDisplay').textContent='+RM 0.00';return}
+        const total=manualIncomes.reduce((s,e)=>s+parseFloat(e.amount),0);
+        document.getElementById('incomeTotalDisplay').textContent='+RM '+total.toFixed(2);
+        list.innerHTML=manualIncomes.map(e=>{
+            const d=new Date(e.created_at);
+            return`<div class="expense-item income-item"><div class="expense-item-info"><div class="expense-item-name">📥 ${e.name}</div><div class="expense-item-date">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div><div class="expense-item-amount income-amount">+RM${parseFloat(e.amount).toFixed(2)}</div><button class="expense-item-delete" onclick="deleteManualEntry(${e.id})">✕</button></div>`;
+        }).join('');
     }
 
     function renderManualExpenses(){
         const list=document.getElementById('manualExpenseList');
-        if(!manualExpenses.length){
-            list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No expenses added today</p>';
-            document.getElementById('manualExpenseTotalDisplay').textContent='RM 0.00';
-            return;
-        }
-        
+        if(!manualExpenses.length){list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No expenses added today</p>';document.getElementById('manualExpenseTotalDisplay').textContent='-RM 0.00';return}
         const total=manualExpenses.reduce((s,e)=>s+parseFloat(e.amount),0);
-        document.getElementById('manualExpenseTotalDisplay').textContent='RM '+total.toFixed(2);
-        
+        document.getElementById('manualExpenseTotalDisplay').textContent='-RM '+total.toFixed(2);
         list.innerHTML=manualExpenses.map(e=>{
             const d=new Date(e.created_at);
-            return`<div class="expense-item"><div class="expense-item-info"><div class="expense-item-name">${e.name}</div><div class="expense-item-date">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div><div class="expense-item-amount">-RM${parseFloat(e.amount).toFixed(2)}</div><button class="expense-item-delete" onclick="deleteManualExpense(${e.id})">✕</button></div>`;
+            return`<div class="expense-item expense-item-type"><div class="expense-item-info"><div class="expense-item-name">📤 ${e.name}</div><div class="expense-item-date">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div><div class="expense-item-amount">-RM${parseFloat(e.amount).toFixed(2)}</div><button class="expense-item-delete" onclick="deleteManualEntry(${e.id})">✕</button></div>`;
         }).join('');
     }
 
-    async function addManualExpense(){
-        const name=document.getElementById('expenseName').value.trim();
-        const amount=parseFloat(document.getElementById('expenseAmount').value);
-        
-        if(!name){showToast('Enter expense name','⚠️');return}
-        if(!amount||amount<=0){showToast('Enter valid amount','⚠️');return}
-        
-        try{
-            await db.from('manual_expenses').insert({name,amount});
-            document.getElementById('expenseName').value='';
-            document.getElementById('expenseAmount').value='';
-            await loadManualExpenses();
-            calculateExpenseSummary();
-            showToast('Expense added','✅');
-        }catch(e){
-            showToast('Failed to add expense','❌');
+    function setEntryType(type){
+        currentEntryType=type;
+        document.querySelectorAll('.entry-type-btn').forEach(b=>b.classList.remove('active','expense-type','income-type'));
+        const btn=document.getElementById(type==='income'?'btnIncome':'btnExpense');
+        btn.classList.add('active',type==='income'?'income-type':'expense-type');
+        const addBtn=document.getElementById('addEntryBtn');
+        const nameInput=document.getElementById('expenseName');
+        if(type==='income'){
+            addBtn.textContent='➕ Add Income';
+            addBtn.classList.add('income-btn');
+            nameInput.placeholder='Enter name (e.g., Extra Sales, Tips)';
+        }else{
+            addBtn.textContent='➖ Add Expense';
+            addBtn.classList.remove('income-btn');
+            nameInput.placeholder='Enter name (e.g., Milk Purchase)';
         }
     }
 
-    async function deleteManualExpense(id){
+    async function addManualEntry(){
+        const name=document.getElementById('expenseName').value.trim();
+        const amount=parseFloat(document.getElementById('expenseAmount').value);
+        if(!name){showToast('Enter a name','⚠️');return}
+        if(!amount||amount<=0){showToast('Enter valid amount','⚠️');return}
+        try{
+            await db.from('manual_expenses').insert({name,amount,type:currentEntryType});
+            document.getElementById('expenseName').value='';
+            document.getElementById('expenseAmount').value='';
+            await loadManualEntries();
+            calculateExpenseSummary();
+            if(currentEntryType==='income'){showToast('Income added! +RM'+amount.toFixed(2),'📥')}
+            else{showToast('Expense added! -RM'+amount.toFixed(2),'📤')}
+        }catch(e){showToast('Failed to add entry','❌')}
+    }
+
+    async function deleteManualEntry(id){
         try{
             await db.from('manual_expenses').delete().eq('id',id);
-            await loadManualExpenses();
+            await loadManualEntries();
             calculateExpenseSummary();
-            showToast('Expense deleted','🗑️');
-        }catch(e){
-            showToast('Failed to delete','❌');
-        }
+            showToast('Entry deleted','🗑️');
+        }catch(e){showToast('Failed to delete','❌')}
     }
 
     async function loadAutoExpenses(){
         try{
-            const today=new Date();
-            today.setHours(0,0,0,0);
-            
+            const today=new Date();today.setHours(0,0,0,0);
             const{data:orders}=await db.from('orders').select('*,order_items(*)').gte('created_at',today.toISOString());
-            
             const drinkSales={};
             (orders||[]).forEach(o=>{
                 (o.order_items||[]).forEach(item=>{
-                    if(!drinkSales[item.drink_id]){
-                        drinkSales[item.drink_id]={name:item.drink_name,qty:0};
-                    }
+                    if(!drinkSales[item.drink_id]){drinkSales[item.drink_id]={name:item.drink_name,qty:0}}
                     drinkSales[item.drink_id].qty+=item.quantity;
                 });
             });
-            
             const list=document.getElementById('autoExpenseList');
             const entries=Object.entries(drinkSales);
-            
-            if(!entries.length){
-                list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No sales today - auto expense is RM 0</p>';
-                document.getElementById('autoExpenseTotalDisplay').textContent='RM 0.00';
-                return;
-            }
-            
+            if(!entries.length){list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No sales today - auto expense is RM 0</p>';document.getElementById('autoExpenseTotalDisplay').textContent='-RM 0.00';return}
             let totalAutoExpense=0;
-            
             list.innerHTML=entries.map(([id,data])=>{
                 const drink=allDrinks.find(d=>d.id==id);
                 const cost=drink?.cost_price||0;
                 const totalCost=parseFloat(cost)*data.qty;
                 totalAutoExpense+=totalCost;
-                return`<div class="auto-expense-item"><div class="auto-expense-drink"><div class="auto-expense-name">${data.name}</div><div class="auto-expense-calc">${data.qty} cups × RM${parseFloat(cost).toFixed(2)} cost</div></div><div class="auto-expense-total">RM${totalCost.toFixed(2)}</div></div>`;
+                return`<div class="auto-expense-item"><div class="auto-expense-drink"><div class="auto-expense-name">${data.name}</div><div class="auto-expense-calc">${data.qty} cups × RM${parseFloat(cost).toFixed(2)} cost</div></div><div class="auto-expense-total">-RM${totalCost.toFixed(2)}</div></div>`;
             }).join('');
-            
-            document.getElementById('autoExpenseTotalDisplay').textContent='RM '+totalAutoExpense.toFixed(2);
-            
-        }catch(e){
-            console.error(e);
-        }
+            document.getElementById('autoExpenseTotalDisplay').textContent='-RM '+totalAutoExpense.toFixed(2);
+        }catch(e){console.error(e)}
     }
 
     async function calculateExpenseSummary(){
-        const today=new Date();
-        today.setHours(0,0,0,0);
-        
+        const today=new Date();today.setHours(0,0,0,0);
         try{
-            // Get today's sales
             const{data:orders}=await db.from('orders').select('*,order_items(*)').gte('created_at',today.toISOString());
             const todaySales=(orders||[]).reduce((s,o)=>s+parseFloat(o.total_amount||0),0);
-            
-            // Calculate auto expense
             let autoExpense=0;
             (orders||[]).forEach(o=>{
                 (o.order_items||[]).forEach(item=>{
                     const drink=allDrinks.find(d=>d.id===item.drink_id);
-                    if(drink&&drink.cost_price){
-                        autoExpense+=parseFloat(drink.cost_price)*item.quantity;
-                    }
+                    if(drink&&drink.cost_price){autoExpense+=parseFloat(drink.cost_price)*item.quantity}
                 });
             });
-            
-            // Get manual expense total
-            const manualTotal=manualExpenses.reduce((s,e)=>s+parseFloat(e.amount),0);
-            
-            // Calculate based on mode
+            const manualExpenseTotal=manualExpenses.reduce((s,e)=>s+parseFloat(e.amount),0);
+            const manualIncomeTotal=manualIncomes.reduce((s,e)=>s+parseFloat(e.amount),0);
             let totalExpense=0;
-            if(expenseMode==='both')totalExpense=manualTotal+autoExpense;
-            else if(expenseMode==='manual')totalExpense=manualTotal;
+            if(expenseMode==='both')totalExpense=manualExpenseTotal+autoExpense;
+            else if(expenseMode==='manual')totalExpense=manualExpenseTotal;
             else if(expenseMode==='auto')totalExpense=autoExpense;
-            
-            const netProfit=todaySales-totalExpense;
-            
-            // Update summary cards
+            const netProfit=todaySales+manualIncomeTotal-totalExpense;
             document.getElementById('expTodaySales').textContent='RM '+todaySales.toFixed(2);
-            document.getElementById('expManualTotal').textContent='RM '+manualTotal.toFixed(2);
-            document.getElementById('expAutoTotal').textContent='RM '+autoExpense.toFixed(2);
-            document.getElementById('expTotalExpense').textContent='RM '+totalExpense.toFixed(2);
+            document.getElementById('expIncomeTotal').textContent='+RM '+manualIncomeTotal.toFixed(2);
+            document.getElementById('expManualTotal').textContent='-RM '+manualExpenseTotal.toFixed(2);
+            document.getElementById('expAutoTotal').textContent='-RM '+autoExpense.toFixed(2);
             document.getElementById('expNetProfit').textContent='RM '+netProfit.toFixed(2);
-            
             const profitCard=document.getElementById('expProfitCard');
             profitCard.classList.remove('profit','loss');
             profitCard.classList.add(netProfit>=0?'profit':'loss');
-            
-        }catch(e){
-            console.error(e);
-        }
+        }catch(e){console.error(e)}
     }
 
     function setExpenseMode(mode,btn){
         expenseMode=mode;
         document.querySelectorAll('.expense-toggle-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
-        
         const manualSection=document.getElementById('manualExpenseSection');
         const autoSection=document.getElementById('autoExpenseSection');
-        
-        if(mode==='manual'){
-            manualSection.style.display='block';
-            autoSection.style.display='none';
-        }else if(mode==='auto'){
-            manualSection.style.display='none';
-            autoSection.style.display='block';
-        }else{
-            manualSection.style.display='block';
-            autoSection.style.display='block';
-        }
-        
+        if(mode==='manual'){manualSection.style.display='block';autoSection.style.display='none'}
+        else if(mode==='auto'){manualSection.style.display='none';autoSection.style.display='block'}
+        else{manualSection.style.display='block';autoSection.style.display='block'}
         calculateExpenseSummary();
     }
 
     function renderDrinkCostEditor(){
         const list=document.getElementById('costEditList');
-        if(!allDrinks.length){
-            list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No drinks found</p>';
-            return;
-        }
-        
+        if(!allDrinks.length){list.innerHTML='<p style="color:#b2bec3;text-align:center;padding:20px">No drinks found</p>';return}
         list.innerHTML=allDrinks.map(d=>`<div class="cost-edit-item"><span>${d.emoji||'🧊'} ${d.name}</span><input type="number" id="cost_${d.id}" value="${d.cost_price||0}" step="0.01" min="0" placeholder="0.00"></div>`).join('');
     }
 
@@ -1695,62 +1550,7 @@
             await loadAutoExpenses();
             calculateExpenseSummary();
             showToast('Costs saved!','✅');
-        }catch(e){
-            showToast('Failed to save costs','❌');
-        }
-    }
-
-    // SETTINGS
-    function loadSettingsUI(){
-        const logoUrl=siteSettings.logo_url;
-        const siteName=siteSettings.site_name||'';
-        if(logoUrl){
-            document.getElementById('logoPreview').innerHTML=`<img src="${logoUrl}" alt="Logo">`;
-            document.getElementById('logoPreview').classList.add('has-image');
-            document.getElementById('logoUrlInput').value=logoUrl;
-        }
-        document.getElementById('siteNameInput').value=siteName;
-    }
-
-    async function handleLogoUpload(input){
-        if(!input.files||!input.files[0])return;
-        const file=input.files[0];
-        const progress=document.getElementById('logoUploadProgress');
-        progress.textContent='Uploading...';
-        try{
-            const fileName='logo_'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9.]/g,'_');
-            const{data,error}=await db.storage.from('images').upload(fileName,file,{cacheControl:'3600',upsert:false});
-            if(error)throw error;
-            const{data:urlData}=db.storage.from('images').getPublicUrl(fileName);
-            const publicUrl=urlData.publicUrl;
-            document.getElementById('logoUrlInput').value=publicUrl;
-            document.getElementById('logoPreview').innerHTML=`<img src="${publicUrl}" alt="Logo">`;
-            document.getElementById('logoPreview').classList.add('has-image');
-            progress.textContent='✅ Uploaded!';
-        }catch(e){
-            progress.textContent='❌ Error: '+e.message;
-        }
-    }
-
-    async function saveLogo(){
-        const url=document.getElementById('logoUrlInput').value.trim();
-        try{
-            await db.from('site_settings').upsert({setting_key:'logo_url',setting_value:url,updated_at:new Date().toISOString()},{onConflict:'setting_key'});
-            siteSettings.logo_url=url;
-            applySiteSettings();
-            showToast('Logo saved!','✅');
-        }catch(e){showToast('Error: '+e.message,'❌')}
-    }
-
-    async function saveSiteName(){
-        const name=document.getElementById('siteNameInput').value.trim();
-        if(!name){showToast('Enter a name','⚠️');return}
-        try{
-            await db.from('site_settings').upsert({setting_key:'site_name',setting_value:name,updated_at:new Date().toISOString()},{onConflict:'setting_key'});
-            siteSettings.site_name=name;
-            applySiteSettings();
-            showToast('Name saved!','✅');
-        }catch(e){showToast('Error: '+e.message,'❌')}
+        }catch(e){showToast('Failed to save costs','❌')}
     }
 
     // ORDERS
@@ -1805,7 +1605,7 @@
         }catch(e){showToast(e.message,'❌')}
     }
 
-    // ADMIN REVIEWS
+    // REVIEWS
     async function loadAdminReviews(){
         const grid=document.getElementById('adminReviewsGrid');
         grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">Loading...</p>';
@@ -1814,89 +1614,33 @@
             if(currentReviewFilter!=='all')query=query.eq('status',currentReviewFilter);
             const{data,error}=await query;
             if(error)throw error;
-            if(!data||!data.length){
-                grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">No reviews found</p>';
-                return;
-            }
+            if(!data||!data.length){grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">No reviews found</p>';return}
             grid.innerHTML=data.map(r=>{
                 const stars=Array(5).fill(0).map((_,i)=>`<span>${i<r.rating?'★':'☆'}</span>`).join('');
                 const d=new Date(r.created_at);
-                return`<div class="review-admin-card ${r.status}">
-                    <div class="review-admin-content">
-                        <div class="review-admin-header">
-                            <span class="review-admin-name">${r.customer_name||'Customer'}</span>
-                            <div class="review-admin-stars">${stars}</div>
-                        </div>
-                        <p class="review-admin-text">${r.review_text||'No comment'}</p>
-                        <p class="review-admin-date">${d.toLocaleDateString()} - Order #${r.order_id||'N/A'}</p>
-                    </div>
-                    <div class="review-admin-actions">
-                        ${r.status==='pending'?`
-                            <button class="approve-btn" onclick="approveReview(${r.id})">✓ Approve</button>
-                            <button class="reject-btn" onclick="rejectReview(${r.id})">✕ Reject</button>
-                        `:`<span style="font-size:10px;color:#b2bec3;text-transform:uppercase">${r.status}</span>`}
-                    </div>
-                </div>`;
+                return`<div class="review-admin-card ${r.status}"><div class="review-admin-content"><div class="review-admin-header"><span class="review-admin-name">${r.customer_name||'Customer'}</span><div class="review-admin-stars">${stars}</div></div><p class="review-admin-text">${r.review_text||'No comment'}</p><p class="review-admin-date">${d.toLocaleDateString()} - Order #${r.order_id||'N/A'}</p></div><div class="review-admin-actions">${r.status==='pending'?`<button class="approve-btn" onclick="approveReview(${r.id})">✓ Approve</button><button class="reject-btn" onclick="rejectReview(${r.id})">✕ Reject</button>`:`<span style="font-size:10px;color:#b2bec3;text-transform:uppercase">${r.status}</span>`}</div></div>`;
             }).join('');
-        }catch(e){
-            grid.innerHTML='<p style="color:#e17055;padding:20px">Error: '+e.message+'</p>';
-        }
+        }catch(e){grid.innerHTML='<p style="color:#e17055;padding:20px">Error: '+e.message+'</p>'}
     }
 
-    function filterAdminReviews(status,btn){
-        currentReviewFilter=status;
-        document.querySelectorAll('#adminTabReviews .admin-filter-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        loadAdminReviews();
-    }
+    function filterAdminReviews(status,btn){currentReviewFilter=status;document.querySelectorAll('#adminTabReviews .admin-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');loadAdminReviews()}
 
-    async function approveReview(id){
-        try{
-            await db.from('reviews').update({status:'approved'}).eq('id',id);
-            showToast('Review approved!','✅');
-            loadAdminReviews();
-            loadApprovedReviews();
-        }catch(e){showToast(e.message,'❌')}
-    }
+    async function approveReview(id){try{await db.from('reviews').update({status:'approved'}).eq('id',id);showToast('Review approved!','✅');loadAdminReviews();loadApprovedReviews()}catch(e){showToast(e.message,'❌')}}
+    async function rejectReview(id){try{await db.from('reviews').update({status:'rejected'}).eq('id',id);showToast('Review rejected','🗑️');loadAdminReviews()}catch(e){showToast(e.message,'❌')}}
 
-    async function rejectReview(id){
-        try{
-            await db.from('reviews').update({status:'rejected'}).eq('id',id);
-            showToast('Review rejected','🗑️');
-            loadAdminReviews();
-        }catch(e){showToast(e.message,'❌')}
-    }
-
-    // MENU MANAGEMENT
+    // MENU
     async function loadMenuItems(){
         const grid=document.getElementById('menuItemsGrid');
         grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">Loading...</p>';
         try{
             const{data,error}=await db.from('drinks').select('*,categories(*)').order('display_order');
             if(error)throw error;
-            if(!data||!data.length){
-                grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">No items found</p>';
-                return;
-            }
+            if(!data||!data.length){grid.innerHTML='<p style="color:#b2bec3;padding:40px;text-align:center">No items found</p>';return}
             grid.innerHTML=data.map(d=>{
                 const imgContent=d.image_url?`<img src="${d.image_url}" alt="${d.name}">`:(d.emoji||'🧊');
-                return`<div class="menu-item-card">
-                    <div class="menu-item-img">${imgContent}</div>
-                    <div class="menu-item-info">
-                        <div class="mi-cat">${d.categories?d.categories.name:''}</div>
-                        <h4>${d.name}</h4>
-                        <div class="mi-price">RM${parseFloat(d.price).toFixed(2)}</div>
-                        <div class="mi-cost">Cost: RM${parseFloat(d.cost_price||0).toFixed(2)}</div>
-                    </div>
-                    <div class="menu-item-actions">
-                        <button class="mi-edit-btn" onclick="editItem(${d.id})">Edit</button>
-                        <button class="mi-delete-btn" onclick="deleteItem(${d.id},'${d.name.replace(/'/g,"\\'")}')">Del</button>
-                    </div>
-                </div>`;
+                return`<div class="menu-item-card"><div class="menu-item-img">${imgContent}</div><div class="menu-item-info"><div class="mi-cat">${d.categories?d.categories.name:''}</div><h4>${d.name}</h4><div class="mi-price">RM${parseFloat(d.price).toFixed(2)}</div><div class="mi-cost">Cost: RM${parseFloat(d.cost_price||0).toFixed(2)}</div></div><div class="menu-item-actions"><button class="mi-edit-btn" onclick="editItem(${d.id})">Edit</button><button class="mi-delete-btn" onclick="deleteItem(${d.id},'${d.name.replace(/'/g,"\\'")}')">Del</button></div></div>`;
             }).join('');
-        }catch(e){
-            grid.innerHTML='<p style="color:#e17055;padding:20px">Error: '+e.message+'</p>';
-        }
+        }catch(e){grid.innerHTML='<p style="color:#e17055;padding:20px">Error: '+e.message+'</p>'}
     }
 
     function openItemForm(item){
@@ -1910,38 +1654,27 @@
         document.getElementById('itemBadge').value=item?item.badge||'':'';
         document.getElementById('itemOrder').value=item?item.display_order||0:0;
         document.getElementById('itemImageUrl').value=item?item.image_url||'':'';
-        
         const preview=document.getElementById('itemImagePreview');
-        if(item&&item.image_url){
-            preview.innerHTML=`<img src="${item.image_url}" alt="Preview"><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
-        }else{
-            preview.innerHTML=`<div class="upload-placeholder"><span>📷</span><p>Click to upload image</p></div><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
-        }
-        
+        if(item&&item.image_url){preview.innerHTML=`<img src="${item.image_url}" alt="Preview"><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`}
+        else{preview.innerHTML=`<div class="upload-placeholder"><span>📷</span><p>Click to upload image</p></div><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`}
         const catSel=document.getElementById('itemCategory');
         catSel.innerHTML=allCategories.map(c=>'<option value="'+c.id+'"'+(item&&item.category_id===c.id?' selected':'')+'>'+c.name+'</option>').join('');
         document.getElementById('itemFormOverlay').classList.add('open');
     }
 
-    function closeItemForm(){
-        document.getElementById('itemFormOverlay').classList.remove('open');
-    }
+    function closeItemForm(){document.getElementById('itemFormOverlay').classList.remove('open')}
 
     async function handleItemImageUpload(input){
         if(!input.files||!input.files[0])return;
         const file=input.files[0];
         const preview=document.getElementById('itemImagePreview');
-        
         preview.innerHTML=`<div class="upload-placeholder"><span>⏳</span><p>Uploading...</p></div><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
-        
         try{
             const fileName='item_'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9.]/g,'_');
             const{data,error}=await db.storage.from('images').upload(fileName,file,{cacheControl:'3600',upsert:false});
             if(error)throw error;
-            
             const{data:urlData}=db.storage.from('images').getPublicUrl(fileName);
             const publicUrl=urlData.publicUrl;
-            
             document.getElementById('itemImageUrl').value=publicUrl;
             preview.innerHTML=`<img src="${publicUrl}" alt="Preview"><input type="file" accept="image/*" onchange="handleItemImageUpload(this)">`;
             showToast('Image uploaded!','✅');
@@ -1951,22 +1684,11 @@
         }
     }
 
-    async function editItem(id){
-        try{
-            const{data,error}=await db.from('drinks').select('*').eq('id',id).single();
-            if(error)throw error;
-            openItemForm(data);
-        }catch(e){
-            showToast(e.message,'❌');
-        }
-    }
+    async function editItem(id){try{const{data,error}=await db.from('drinks').select('*').eq('id',id).single();if(error)throw error;openItemForm(data)}catch(e){showToast(e.message,'❌')}}
 
     async function saveItem(e){
         e.preventDefault();
-        const btn=document.getElementById('itemSaveBtn');
-        btn.disabled=true;
-        btn.textContent='Saving...';
-        
+        const btn=document.getElementById('itemSaveBtn');btn.disabled=true;btn.textContent='Saving...';
         const id=document.getElementById('itemId').value;
         const item={
             name:document.getElementById('itemName').value.trim(),
@@ -1980,27 +1702,15 @@
             image_url:document.getElementById('itemImageUrl').value.trim()||null,
             is_available:true
         };
-        
         try{
-            if(id){
-                await db.from('drinks').update(item).eq('id',id);
-                showToast('Item updated!','✅');
-            }else{
-                await db.from('drinks').insert(item);
-                showToast('Item added!','✅');
-            }
+            if(id){await db.from('drinks').update(item).eq('id',id);showToast('Item updated!','✅')}
+            else{await db.from('drinks').insert(item);showToast('Item added!','✅')}
             closeItemForm();
-            
             const{data}=await db.from('drinks').select('*,categories(*)').eq('is_available',true).order('display_order');
             allDrinks=data||[];
             renderDrinks(allDrinks);
             loadMenuItems();
-        }catch(err){
-            showToast(err.message,'❌');
-        }finally{
-            btn.disabled=false;
-            btn.textContent='Save Item';
-        }
+        }catch(err){showToast(err.message,'❌')}finally{btn.disabled=false;btn.textContent='Save Item'}
     }
 
     async function deleteItem(id,name){
@@ -2008,14 +1718,62 @@
         try{
             await db.from('drinks').delete().eq('id',id);
             showToast(name+' deleted','🗑️');
-            
             const{data}=await db.from('drinks').select('*,categories(*)').eq('is_available',true).order('display_order');
             allDrinks=data||[];
             renderDrinks(allDrinks);
             loadMenuItems();
-        }catch(e){
-            showToast(e.message,'❌');
+        }catch(e){showToast(e.message,'❌')}
+    }
+
+    // SETTINGS
+    function loadSettingsUI(){
+        const logoUrl=siteSettings.logo_url;
+        const siteName=siteSettings.site_name||'';
+        if(logoUrl){
+            document.getElementById('logoPreview').innerHTML=`<img src="${logoUrl}" alt="Logo">`;
+            document.getElementById('logoPreview').classList.add('has-image');
+            document.getElementById('logoUrlInput').value=logoUrl;
         }
+        document.getElementById('siteNameInput').value=siteName;
+    }
+
+    async function handleLogoUpload(input){
+        if(!input.files||!input.files[0])return;
+        const file=input.files[0];
+        const progress=document.getElementById('logoUploadProgress');
+        progress.textContent='Uploading...';
+        try{
+            const fileName='logo_'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9.]/g,'_');
+            const{data,error}=await db.storage.from('images').upload(fileName,file,{cacheControl:'3600',upsert:false});
+            if(error)throw error;
+            const{data:urlData}=db.storage.from('images').getPublicUrl(fileName);
+            const publicUrl=urlData.publicUrl;
+            document.getElementById('logoUrlInput').value=publicUrl;
+            document.getElementById('logoPreview').innerHTML=`<img src="${publicUrl}" alt="Logo">`;
+            document.getElementById('logoPreview').classList.add('has-image');
+            progress.textContent='✅ Uploaded!';
+        }catch(e){progress.textContent='❌ Error: '+e.message}
+    }
+
+    async function saveLogo(){
+        const url=document.getElementById('logoUrlInput').value.trim();
+        try{
+            await db.from('site_settings').upsert({setting_key:'logo_url',setting_value:url,updated_at:new Date().toISOString()},{onConflict:'setting_key'});
+            siteSettings.logo_url=url;
+            applySiteSettings();
+            showToast('Logo saved!','✅');
+        }catch(e){showToast('Error: '+e.message,'❌')}
+    }
+
+    async function saveSiteName(){
+        const name=document.getElementById('siteNameInput').value.trim();
+        if(!name){showToast('Enter a name','⚠️');return}
+        try{
+            await db.from('site_settings').upsert({setting_key:'site_name',setting_value:name,updated_at:new Date().toISOString()},{onConflict:'setting_key'});
+            siteSettings.site_name=name;
+            applySiteSettings();
+            showToast('Name saved!','✅');
+        }catch(e){showToast('Error: '+e.message,'❌')}
     }
 
     // Initialize
